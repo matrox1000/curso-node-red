@@ -294,6 +294,13 @@ Los dos umbrales dividen el rango de humedad en tres bandas. Así se clasificar�
 Une las tres salidas en un `function` llamado `decidir riego`:
 
 ```js
+// Al arrancar pueden llegar lecturas retenidas antes que los umbrales:
+// sin umbrales, el switch no ha podido clasificar bien la lectura
+if (!flow.get("umbrales")) {
+    node.warn("Lectura ignorada: los umbrales aún no están cargados");
+    return null;
+}
+
 // Guarda el último estado en el contexto de flujo y decide la acción
 const anterior = flow.get("estadoSuelo");
 flow.set("estadoSuelo", msg.estado);
@@ -317,6 +324,7 @@ return msg;
 ```
 
 - `flow.get`/`flow.set` leen y escriben el contexto de flujo.
+- La comprobación del principio evita una **condición de carrera**. Los topics del invernadero llevan *retain*, así que al desplegar llega enseguida la última lectura, a veces antes de que el `inject` haya cargado los umbrales. Sin ellos, el `switch` compara con `undefined`, todas las reglas fallan y la lectura sale por *otherwise*: se clasificaría como `normal` sin avisar.
 - `node.status` muestra un indicador bajo el nodo: útil para ver el estado sin abrir la depuración.
 - `cambio` servirá en la sesión 6 para avisar solo cuando el estado cambia, no con cada lectura.
 

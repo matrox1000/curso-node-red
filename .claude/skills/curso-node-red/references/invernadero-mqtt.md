@@ -91,5 +91,10 @@ Las sesiones posteriores deben leer estos nombres tal cual; no inventar otros.
 | `sensores` | S3 | `sensores[<nodo>][<magnitud>] = { valor, unidad, ts }` |
 | `problemas` | S3 | `problemas[<topic o invernadero/<nodo>>] = { motivo: "sin datos" \| "ESP32 inalcanzable", desde }` |
 | `actuadores` | S3 | `actuadores[<equipo>] = { estado: "on" \| "off", id, ts }`, equipo ∈ `bomba`, `ventilador` |
+| `umbrales` | S4 (antes en el contexto de flujo de S1/S2) | `{ suelo: { critico, aviso }, temperatura: { aviso, critico }, margenExterior }` |
+
+Punto único de comandos (S3): `link in` **`comandos a actuadores`** (id `c3d4e5f6a7b80100` en el flujo de referencia) delante de `a topic de comando`; recibe `{ equipo, payload: "on" | "off" | "toggle" }`. El panel (S4) y el riego automático envían ahí, nunca directamente a MQTT.
+
+Dashboard 2.0 (S4): `ui-base` `/dashboard`, `ui-page` `Invernadero` en `/invernadero` (URL `/dashboard/invernadero`); grupos Estado del sistema, Clima, Riego y agua, Actuadores, Tendencias, Consignas. Los widgets se alimentan leyendo el contexto global cada 2 s y enviando solo cambios; los interruptores usan `decouple: true`.
 
 Modelo de datos normalizado (salida 1 de `normalizar`, S3): `msg.payload = { sensor, magnitud, valor, unidad, ts, retenido }`, `msg.topic` original, `msg.tipo = "dato"`. Eventos de `estado de sensores` (S3): `{ fuente, estado: "sin datos" | "recuperado" | "inalcanzable" | "alcanzable", ts }` — son la base de las alarmas de la S6.

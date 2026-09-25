@@ -21,7 +21,11 @@
     "type": "inject",
     "z": "a1b2c3d4e5f60001",
     "name": "cargar umbrales",
-    "props": [{ "p": "payload" }],
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
     "repeat": "",
     "crontab": "",
     "once": true,
@@ -31,14 +35,26 @@
     "payloadType": "json",
     "x": 160,
     "y": 80,
-    "wires": [["a1b2c3d4e5f60004"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60004"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60004",
     "type": "change",
     "z": "a1b2c3d4e5f60001",
     "name": "flow.umbrales = payload",
-    "rules": [{ "t": "set", "p": "umbrales", "pt": "flow", "to": "payload", "tot": "msg" }],
+    "rules": [
+      {
+        "t": "set",
+        "p": "umbrales",
+        "pt": "flow",
+        "to": "payload",
+        "tot": "msg"
+      }
+    ],
     "action": "",
     "property": "",
     "from": "",
@@ -46,7 +62,9 @@
     "reg": false,
     "x": 390,
     "y": 80,
-    "wires": [[]]
+    "wires": [
+      []
+    ]
   },
   {
     "id": "a1b2c3d4e5f60005",
@@ -73,14 +91,26 @@
     "inputs": 0,
     "x": 170,
     "y": 180,
-    "wires": [["a1b2c3d4e5f60010"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60010"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60007",
     "type": "inject",
     "z": "a1b2c3d4e5f60001",
     "name": "prueba: 20 %",
-    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
     "repeat": "",
     "crontab": "",
     "once": false,
@@ -90,14 +120,26 @@
     "payloadType": "str",
     "x": 150,
     "y": 230,
-    "wires": [["a1b2c3d4e5f60010"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60010"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60008",
     "type": "inject",
     "z": "a1b2c3d4e5f60001",
     "name": "prueba: 30 %",
-    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
     "repeat": "",
     "crontab": "",
     "once": false,
@@ -107,14 +149,26 @@
     "payloadType": "str",
     "x": 150,
     "y": 270,
-    "wires": [["a1b2c3d4e5f60010"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60010"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60009",
     "type": "inject",
     "z": "a1b2c3d4e5f60001",
     "name": "prueba: 50 %",
-    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
     "repeat": "",
     "crontab": "",
     "once": false,
@@ -124,14 +178,26 @@
     "payloadType": "str",
     "x": 150,
     "y": 310,
-    "wires": [["a1b2c3d4e5f60010"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60010"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60010",
     "type": "change",
     "z": "a1b2c3d4e5f60001",
     "name": "texto → número",
-    "rules": [{ "t": "set", "p": "payload", "pt": "msg", "to": "$number(payload)", "tot": "jsonata" }],
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "$number(payload)",
+        "tot": "jsonata"
+      }
+    ],
     "action": "",
     "property": "",
     "from": "",
@@ -139,7 +205,12 @@
     "reg": false,
     "x": 400,
     "y": 240,
-    "wires": [["a1b2c3d4e5f60011", "a1b2c3d4e5f60020"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60011",
+        "a1b2c3d4e5f60020"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60011",
@@ -176,23 +247,51 @@
     "property": "payload",
     "propertyType": "msg",
     "rules": [
-      { "t": "lt", "v": "umbrales.suelo.critico", "vt": "flow" },
-      { "t": "lt", "v": "umbrales.suelo.aviso", "vt": "flow" },
-      { "t": "else" }
+      {
+        "t": "lt",
+        "v": "umbrales.suelo.critico",
+        "vt": "flow"
+      },
+      {
+        "t": "lt",
+        "v": "umbrales.suelo.aviso",
+        "vt": "flow"
+      },
+      {
+        "t": "else"
+      }
     ],
     "checkall": "false",
     "repair": false,
     "outputs": 3,
     "x": 590,
     "y": 240,
-    "wires": [["a1b2c3d4e5f60021"], ["a1b2c3d4e5f60022"], ["a1b2c3d4e5f60023"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60021"
+      ],
+      [
+        "a1b2c3d4e5f60022"
+      ],
+      [
+        "a1b2c3d4e5f60023"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60021",
     "type": "change",
     "z": "a1b2c3d4e5f60001",
     "name": "estado = crítico",
-    "rules": [{ "t": "set", "p": "estado", "pt": "msg", "to": "crítico", "tot": "str" }],
+    "rules": [
+      {
+        "t": "set",
+        "p": "estado",
+        "pt": "msg",
+        "to": "crítico",
+        "tot": "str"
+      }
+    ],
     "action": "",
     "property": "",
     "from": "",
@@ -200,14 +299,26 @@
     "reg": false,
     "x": 780,
     "y": 200,
-    "wires": [["a1b2c3d4e5f60030"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60030"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60022",
     "type": "change",
     "z": "a1b2c3d4e5f60001",
     "name": "estado = aviso",
-    "rules": [{ "t": "set", "p": "estado", "pt": "msg", "to": "aviso", "tot": "str" }],
+    "rules": [
+      {
+        "t": "set",
+        "p": "estado",
+        "pt": "msg",
+        "to": "aviso",
+        "tot": "str"
+      }
+    ],
     "action": "",
     "property": "",
     "from": "",
@@ -215,14 +326,26 @@
     "reg": false,
     "x": 780,
     "y": 240,
-    "wires": [["a1b2c3d4e5f60030"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60030"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60023",
     "type": "change",
     "z": "a1b2c3d4e5f60001",
     "name": "estado = normal",
-    "rules": [{ "t": "set", "p": "estado", "pt": "msg", "to": "normal", "tot": "str" }],
+    "rules": [
+      {
+        "t": "set",
+        "p": "estado",
+        "pt": "msg",
+        "to": "normal",
+        "tot": "str"
+      }
+    ],
     "action": "",
     "property": "",
     "from": "",
@@ -230,14 +353,18 @@
     "reg": false,
     "x": 780,
     "y": 280,
-    "wires": [["a1b2c3d4e5f60030"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60030"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60030",
     "type": "function",
     "z": "a1b2c3d4e5f60001",
     "name": "decidir riego",
-    "func": "// Guarda el último estado en el contexto de flujo y decide la acción\nconst anterior = flow.get(\"estadoSuelo\");\nflow.set(\"estadoSuelo\", msg.estado);\nflow.set(\"ultimaHumedadSuelo\", msg.payload);\n\nconst accion = msg.estado === \"crítico\" ? \"regar\" : \"no regar\";\n\nmsg.payload = {\n    humedad: msg.payload,\n    estado: msg.estado,\n    accion: accion,\n    cambio: msg.estado !== anterior\n};\n\nnode.status({\n    fill: msg.estado === \"normal\" ? \"green\" : msg.estado === \"aviso\" ? \"yellow\" : \"red\",\n    shape: \"dot\",\n    text: `${msg.payload.humedad} % → ${accion}`\n});\nreturn msg;",
+    "func": "// Al arrancar pueden llegar lecturas retenidas antes que los umbrales:\n// sin umbrales, el switch no ha podido clasificar bien la lectura\nif (!flow.get(\"umbrales\")) {\n    node.warn(\"Lectura ignorada: los umbrales aún no están cargados\");\n    return null;\n}\n\n// Guarda el último estado en el contexto de flujo y decide la acción\nconst anterior = flow.get(\"estadoSuelo\");\nflow.set(\"estadoSuelo\", msg.estado);\nflow.set(\"ultimaHumedadSuelo\", msg.payload);\n\nconst accion = msg.estado === \"crítico\" ? \"regar\" : \"no regar\";\n\nmsg.payload = {\n    humedad: msg.payload,\n    estado: msg.estado,\n    accion: accion,\n    cambio: msg.estado !== anterior\n};\n\nnode.status({\n    fill: msg.estado === \"normal\" ? \"green\" : msg.estado === \"aviso\" ? \"yellow\" : \"red\",\n    shape: \"dot\",\n    text: `${msg.payload.humedad} % → ${accion}`\n});\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,
@@ -246,7 +373,11 @@
     "libs": [],
     "x": 980,
     "y": 240,
-    "wires": [["a1b2c3d4e5f60031"]]
+    "wires": [
+      [
+        "a1b2c3d4e5f60031"
+      ]
+    ]
   },
   {
     "id": "a1b2c3d4e5f60031",

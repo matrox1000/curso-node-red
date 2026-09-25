@@ -159,7 +159,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 
 **Entregable:** sistema que integra por MQTT todos los sensores del invernadero en el modelo de datos común, detecta cuándo un sensor deja de publicar o un ESP32 es inalcanzable, y riega automáticamente enviando comandos a la bomba con confirmación de su estado.
 
-### Sesión 4 — Paneles de monitorización
+### [Sesión 4 — Paneles de monitorización](/sesiones/04-dashboards)
 
 **Objetivos**
 
@@ -176,7 +176,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 
 **Node-RED como plataforma:** Dashboard 2.0 frente a Dashboard 1.0 (obsoleto), temas, y cómo se sirve el panel desde el mismo Node-RED.
 
-**Entregable:** panel en tiempo real del invernadero, con el estado de cada sensor (incluidos los caídos) y al menos un control que actúe sobre el sistema.
+**Entregable:** panel en tiempo real del invernadero con el estado del sistema, clima, riego y agua, actuadores con estado confirmado, tendencias y consignas editables y validadas. Los datos de un sensor averiado deben distinguirse de los actuales.
 
 ### Sesión 5 — Persistencia de datos
 

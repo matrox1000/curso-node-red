@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="t d">
+  <title id="t">Ciclo del interruptor en modo decouple</title>
+  <desc id="d">El operador hace clic en el interruptor y este envía "on", pero su indicador no cambia todavía. El mensaje pasa por el punto único de comandos de la sesión 3, llega al Shelly por MQTT y el Shelly publica su nuevo estado. La sesión 3 lo guarda en global.actuadores, el panel lo lee cada 2 segundos y solo entonces el indicador pasa a "on". Si el Shelly no responde, el indicador sigue en "off": el panel muestra la realidad, no la intención.</desc>
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .titulo { font-size: 13px; font-weight: 600; }
+    .sub { font-size: 12px; fill: #475569; }
+    .codigo { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #1e293b; }
+    .etiqueta { font-size: 11px; fill: #64748b; }
+    .cable { stroke: #64748b; stroke-width: 1.6; fill: none; }
+  </style>
+
+  <rect class="superficie" x="0.5" y="0.5" width="899" height="299" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+
+  <!-- Fila superior: ida -->
+  <rect x="30" y="40" width="190" height="62" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="125" y="64" text-anchor="middle" class="titulo">1 · Clic en el interruptor</text>
+  <text x="125" y="86" text-anchor="middle" class="sub">envía "on" · indicador: off</text>
+
+  <rect x="355" y="40" width="190" height="62" rx="10" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="450" y="64" text-anchor="middle" class="titulo">2 · a topic de comando</text>
+  <text x="450" y="86" text-anchor="middle" class="sub">punto único (S3) → MQTT</text>
+
+  <rect x="680" y="40" width="190" height="62" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="775" y="64" text-anchor="middle" class="titulo">3 · Shelly</text>
+  <text x="775" y="86" text-anchor="middle" class="sub">relé ON · publica "on"</text>
+
+  <!-- Fila inferior: vuelta -->
+  <rect x="680" y="196" width="190" height="62" rx="10" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="775" y="220" text-anchor="middle" class="titulo">4 · estado actuadores</text>
+  <text x="775" y="242" text-anchor="middle" class="codigo">global.actuadores.bomba</text>
+
+  <rect x="355" y="196" width="190" height="62" rx="10" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="450" y="220" text-anchor="middle" class="titulo">5 · grupo Actuadores</text>
+  <text x="450" y="242" text-anchor="middle" class="sub">lo lee cada 2 s</text>
+
+  <rect x="30" y="196" width="190" height="62" rx="10" fill="#dcfce7" stroke="#0ca30c" stroke-width="1.5"/>
+  <text x="125" y="220" text-anchor="middle" class="titulo">6 · Indicador: on</text>
+  <text x="125" y="242" text-anchor="middle" class="sub">✓ estado confirmado</text>
+
+  <line x1="220" y1="71" x2="353" y2="71" class="cable" marker-end="url(#flecha)"/>
+  <text x="286" y="63" text-anchor="middle" class="etiqueta">link out → link in</text>
+  <line x1="545" y1="71" x2="678" y2="71" class="cable" marker-end="url(#flecha)"/>
+  <text x="611" y="63" text-anchor="middle" class="etiqueta">comando</text>
+  <line x1="775" y1="102" x2="775" y2="194" class="cable" marker-end="url(#flecha)"/>
+  <text x="785" y="152" class="etiqueta">estado del relé</text>
+  <line x1="680" y1="227" x2="547" y2="227" class="cable" marker-end="url(#flecha)"/>
+  <line x1="355" y1="227" x2="222" y2="227" class="cable" marker-end="url(#flecha)"/>
+  <text x="288" y="219" text-anchor="middle" class="etiqueta">decouple: true</text>
+
+  <text x="450" y="286" text-anchor="middle" class="sub">Si el Shelly no responde, el indicador sigue en off: el panel muestra la realidad, no la intención.</text>
+</svg>

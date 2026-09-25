@@ -221,6 +221,11 @@ Ahora el dato externo se combina con uno del invernadero.
    ```js
    const interior = msg.payload;
    const u = flow.get("umbrales");
+   if (!u) {
+       // Al arrancar pueden llegar lecturas retenidas antes que los umbrales
+       node.warn("Lectura ignorada: los umbrales aún no están cargados");
+       return null;
+   }
    let meteo = global.get("meteo");
 
    // Una previsión de hace más de 1 h no es fiable

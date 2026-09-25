@@ -396,6 +396,22 @@
     ]
   },
   {
+    "id": "c3d4e5f6a7b80100",
+    "type": "link in",
+    "z": "c3d4e5f6a7b80001",
+    "name": "comandos a actuadores",
+    "links": [
+      "d4e5f6a7b8c90100"
+    ],
+    "x": 175,
+    "y": 560,
+    "wires": [
+      [
+        "c3d4e5f6a7b80020"
+      ]
+    ]
+  },
+  {
     "id": "c3d4e5f6a7b80021",
     "type": "mqtt out",
     "z": "c3d4e5f6a7b80001",

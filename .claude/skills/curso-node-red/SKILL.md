@@ -165,6 +165,18 @@ Plantilla obligatoria para la página de cada sesión (`docs/sesiones/0N-slug.md
 6. **Entregable y evidencias para el informe** (qué debe funcionar, cómo se comprueba, qué evidencias recoger y enlace de descarga al flow en `public/flows/`)
 7. **Recursos adicionales** (opcional)
 
+## Validación de los flujos de referencia
+
+Todo flujo publicado en `docs/public/flows/` debe haberse probado en un **Node-RED real** antes de publicarse. En este equipo no hay Docker, así que se prueba así, en el scratchpad:
+
+1. `npm install --registry=https://registry.npmjs.org/ node-red@4.1 @flowfuse/node-red-dashboard aedes`. El registro npm por defecto del equipo, el de la UA, no tiene estos paquetes.
+2. Broker de pruebas con `aedes` en el puerto 1883, y el simulador real (`docker/simulador/simulador.py`, con `paho-mqtt` instalado con `pip --target`) contra ese broker.
+3. Node-RED con `-p 1881`, las mismas variables de entorno que `docker-compose.yml` y, en `settings.js`, `telemetry.enabled: false` y `tours: false`, para que no aparezcan diálogos en las capturas.
+4. Desplegar juntos los flujos de todas las sesiones hasta la actual con la admin API (`POST /flows`, `Node-RED-Deployment-Type: full`) y revisar que el log no tenga `[error]`. Comprobar el contexto (`GET /context/global/<clave>`), los endpoints y los `inject` (`POST /inject/<id>`), y provocar fallos con `simulador/fallo/...`.
+5. Hacer las **capturas reales** del editor (`/#flow/<id>`) y del panel con Edge headless (`--virtual-time-budget`) y recortarlas con `System.Drawing`.
+
+Esta prueba encontró una **condición de carrera** que las pruebas aisladas no veían. Las lecturas retenidas de MQTT llegan al desplegar, antes de que el `inject` *once* cargue los umbrales. Toda función que dependa de un contexto cargado por un `inject` debe comprobar que existe y descartar el mensaje con `node.warn` si no.
+
 ## Qué evitar
 
 - No generar contenido teórico extenso desconectado de un ejercicio práctico inmediato.

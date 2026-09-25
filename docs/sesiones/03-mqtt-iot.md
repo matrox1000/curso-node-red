@@ -263,7 +263,7 @@ docker compose exec mosquitto mosquitto_pub -u alumno -P alumno -t simulador/fal
 docker compose exec mosquitto mosquitto_pub -u alumno -P alumno -t simulador/fallo/tds -m ok
 ```
 
-Debes ver `sin datos` unos 30 segundos después del primer comando, `inalcanzable` al instante con el segundo, y `recuperado` y `alcanzable` al restaurarlos. En el laboratorio, el profesorado desconectará un sensor durante la sesión.
+Debes ver `sin datos` unos 30 segundos después del primer comando, `inalcanzable` al instante con el segundo, y `recuperado` y `alcanzable` al restaurarlos. Fíjate en que el ESP32 inalcanzable **también** produce `sin datos` en sus topics 30 segundos después: un solo fallo genera varios eventos. En la sesión 6 agruparás las alarmas para avisar solo de la causa. En el laboratorio, el profesorado desconectará un sensor durante la sesión.
 
 ### Paso 7 · Enviar comandos a los Shelly (25 min)
 
@@ -290,7 +290,7 @@ Debes ver `sin datos` unos 30 segundos después del primer comando, `inalcanzabl
 
 3. Un `mqtt out` con el broker `Broker invernadero` y **Topic, QoS y Retain vacíos**: así los toma de `msg.topic`, `msg.qos` y `msg.retain`.
 
-La función es la única que sabe qué Shelly es cada equipo y qué órdenes son válidas. El resto del sistema solo dice "bomba on".
+La función es la única que sabe qué Shelly es cada equipo y qué órdenes son válidas. El resto del sistema solo dice "bomba on". Ponle delante un `link in` llamado `comandos a actuadores`: será la entrada de comandos desde otras pestañas (el panel de la sesión 4 y el riego automático).
 
 ::: danger En el laboratorio, los Shelly son compartidos
 Controlan la bomba y el ventilador reales del invernadero y todos los alumnos están conectados al mismo broker. **Envía comandos solo cuando el profesorado lo indique**, por turnos. En casa, con el simulador, puedes probar libremente.

@@ -1,0 +1,1214 @@
+[
+  {
+    "id": "d4e5f6a7b8c90001",
+    "type": "tab",
+    "label": "S4 · Panel",
+    "disabled": false,
+    "info": "Sesión 4: panel de operador con Dashboard 2.0 en /dashboard/invernadero. Lee el contexto global que llenan las sesiones 2 y 3."
+  },
+  {
+    "id": "d4e5f6a7b8c90011",
+    "type": "comment",
+    "z": "d4e5f6a7b8c90001",
+    "name": "0 · Dimensiones del depósito",
+    "info": "Ajústalas al depósito real: distancia del sensor al agua con el depósito lleno y vacío.",
+    "x": 170,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90013",
+    "type": "inject",
+    "z": "d4e5f6a7b8c90001",
+    "name": "dimensiones depósito",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "{\"llenoCm\":5,\"vacioCm\":40}",
+    "payloadType": "json",
+    "x": 170,
+    "y": 80,
+    "wires": [
+      [
+        "d4e5f6a7b8c90012"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90012",
+    "type": "change",
+    "z": "d4e5f6a7b8c90001",
+    "name": "flow.deposito = payload",
+    "rules": [
+      {
+        "t": "set",
+        "p": "deposito",
+        "pt": "flow",
+        "to": "payload",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 400,
+    "y": 80,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90014",
+    "type": "comment",
+    "z": "d4e5f6a7b8c90001",
+    "name": "1 · Estado actual (cada 2 s, solo lo que cambia)",
+    "info": "Lee global.sensores, meteo, actuadores, ventilacion y problemas.",
+    "x": 230,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90019",
+    "type": "inject",
+    "z": "d4e5f6a7b8c90001",
+    "name": "cada 2 s",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "2",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 340,
+    "wires": [
+      [
+        "d4e5f6a7b8c90015",
+        "d4e5f6a7b8c90016",
+        "d4e5f6a7b8c90017",
+        "d4e5f6a7b8c90018"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90015",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "grupo Clima",
+    "func": "// Contexto global -> widgets del grupo Clima (solo lo que cambia)\nconst ultimo = context.get(\"ultimo\") || {};\nconst si_cambia = (clave, valor) => {\n    if (valor === undefined || valor === null) return null;\n    const huella = JSON.stringify(valor);\n    if (huella === ultimo[clave]) return null;\n    ultimo[clave] = huella;\n    return { payload: valor };\n};\nconst s = global.get(\"sensores\") || {};\nconst meteo = global.get(\"meteo\");\nconst salidas = [\n    si_cambia(\"temp\", s.dht22?.temperatura?.valor),\n    si_cambia(\"hum\", s.dht22?.humedad?.valor),\n    si_cambia(\"ext\", meteo ? `${meteo.tempExterior} ºC` : \"sin datos\")\n];\ncontext.set(\"ultimo\", ultimo);\nreturn salidas;",
+    "outputs": 3,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 200,
+    "wires": [
+      [
+        "d4e5f6a7b8c90020"
+      ],
+      [
+        "d4e5f6a7b8c90021"
+      ],
+      [
+        "d4e5f6a7b8c90022"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90020",
+    "type": "ui-gauge",
+    "z": "d4e5f6a7b8c90001",
+    "name": "Temperatura interior",
+    "group": "d4e5f6a7b8c90006",
+    "order": 1,
+    "value": "payload",
+    "valueType": "msg",
+    "width": 2,
+    "height": 3,
+    "gtype": "gauge-34",
+    "gstyle": "needle",
+    "title": "Temperatura interior",
+    "alwaysShowTitle": false,
+    "floatingTitlePosition": "top-left",
+    "units": "ºC",
+    "icon": "",
+    "prefix": "",
+    "suffix": "",
+    "segments": [
+      {
+        "color": "#53B4FD",
+        "from": 0
+      },
+      {
+        "color": "#5CD65C",
+        "from": 15
+      },
+      {
+        "color": "#FFC800",
+        "from": 30
+      },
+      {
+        "color": "#EA5353",
+        "from": 35
+      }
+    ],
+    "min": 0,
+    "max": 50,
+    "sizeThickness": 16,
+    "sizeGap": 4,
+    "sizeKeyThickness": 8,
+    "styleRounded": true,
+    "styleGlow": false,
+    "className": "",
+    "x": 600,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90021",
+    "type": "ui-gauge",
+    "z": "d4e5f6a7b8c90001",
+    "name": "Humedad del aire",
+    "group": "d4e5f6a7b8c90006",
+    "order": 2,
+    "value": "payload",
+    "valueType": "msg",
+    "width": 2,
+    "height": 3,
+    "gtype": "gauge-34",
+    "gstyle": "needle",
+    "title": "Humedad del aire",
+    "alwaysShowTitle": false,
+    "floatingTitlePosition": "top-left",
+    "units": "%",
+    "icon": "",
+    "prefix": "",
+    "suffix": "",
+    "segments": [
+      {
+        "color": "#53B4FD",
+        "from": 0
+      }
+    ],
+    "min": 0,
+    "max": 100,
+    "sizeThickness": 16,
+    "sizeGap": 4,
+    "sizeKeyThickness": 8,
+    "styleRounded": true,
+    "styleGlow": false,
+    "className": "",
+    "x": 590,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90022",
+    "type": "ui-text",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90006",
+    "order": 3,
+    "width": 4,
+    "height": 1,
+    "name": "Exterior",
+    "label": "Exterior",
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "Helvetica",
+    "fontSize": 16,
+    "color": "#717171",
+    "wrapText": false,
+    "className": "",
+    "value": "payload",
+    "valueType": "msg",
+    "x": 570,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90016",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "grupo Riego y agua",
+    "func": "// Contexto global -> widgets del grupo Riego y agua\nconst ultimo = context.get(\"ultimo\") || {};\nconst si_cambia = (clave, valor) => {\n    if (valor === undefined || valor === null) return null;\n    const huella = JSON.stringify(valor);\n    if (huella === ultimo[clave]) return null;\n    ultimo[clave] = huella;\n    return { payload: valor };\n};\nconst s = global.get(\"sensores\") || {};\nconst dep = flow.get(\"deposito\");   // dimensiones del depósito\nconst d = s.ultrasonidos?.distancia?.valor;\n\n// Distancia del sensor al agua -> nivel en %\nlet nivel;\nif (d !== undefined && dep) {\n    nivel = (dep.vacioCm - d) / (dep.vacioCm - dep.llenoCm) * 100;\n    nivel = Math.round(Math.min(100, Math.max(0, nivel)));\n}\nconst tds = s.tds?.tds?.valor;\nconst peso = s.balanza?.peso?.valor;\nconst salidas = [\n    si_cambia(\"suelo\", s.suelo?.humedad?.valor),\n    si_cambia(\"nivel\", nivel),\n    si_cambia(\"tds\", tds !== undefined ? `${Math.round(tds)} ppm` : undefined),\n    si_cambia(\"peso\", peso !== undefined ? `${(peso / 1000).toFixed(2)} kg` : undefined)\n];\ncontext.set(\"ultimo\", ultimo);\nreturn salidas;",
+    "outputs": 4,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 350,
+    "y": 340,
+    "wires": [
+      [
+        "d4e5f6a7b8c90023"
+      ],
+      [
+        "d4e5f6a7b8c90024"
+      ],
+      [
+        "d4e5f6a7b8c90025"
+      ],
+      [
+        "d4e5f6a7b8c90026"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90023",
+    "type": "ui-gauge",
+    "z": "d4e5f6a7b8c90001",
+    "name": "Humedad del suelo",
+    "group": "d4e5f6a7b8c90007",
+    "order": 1,
+    "value": "payload",
+    "valueType": "msg",
+    "width": 2,
+    "height": 3,
+    "gtype": "gauge-half",
+    "gstyle": "needle",
+    "title": "Humedad del suelo",
+    "alwaysShowTitle": false,
+    "floatingTitlePosition": "top-left",
+    "units": "%",
+    "icon": "",
+    "prefix": "",
+    "suffix": "",
+    "segments": [
+      {
+        "color": "#EA5353",
+        "from": 0
+      },
+      {
+        "color": "#FFC800",
+        "from": 25
+      },
+      {
+        "color": "#5CD65C",
+        "from": 35
+      }
+    ],
+    "min": 0,
+    "max": 100,
+    "sizeThickness": 16,
+    "sizeGap": 4,
+    "sizeKeyThickness": 8,
+    "styleRounded": true,
+    "styleGlow": false,
+    "className": "",
+    "x": 590,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90024",
+    "type": "ui-gauge",
+    "z": "d4e5f6a7b8c90001",
+    "name": "Depósito",
+    "group": "d4e5f6a7b8c90007",
+    "order": 2,
+    "value": "payload",
+    "valueType": "msg",
+    "width": 2,
+    "height": 3,
+    "gtype": "gauge-tank",
+    "gstyle": "needle",
+    "title": "Depósito",
+    "alwaysShowTitle": false,
+    "floatingTitlePosition": "top-left",
+    "units": "%",
+    "icon": "",
+    "prefix": "",
+    "suffix": "",
+    "segments": [
+      {
+        "color": "#A8F5FF",
+        "from": 0
+      },
+      {
+        "color": "#55DBEC",
+        "from": 15
+      },
+      {
+        "color": "#53B4FD",
+        "from": 35
+      },
+      {
+        "color": "#2397D1",
+        "from": 50
+      }
+    ],
+    "min": 0,
+    "max": 100,
+    "sizeThickness": 16,
+    "sizeGap": 4,
+    "sizeKeyThickness": 8,
+    "styleRounded": true,
+    "styleGlow": false,
+    "className": "",
+    "x": 570,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90025",
+    "type": "ui-text",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90007",
+    "order": 3,
+    "width": 4,
+    "height": 1,
+    "name": "Calidad del agua",
+    "label": "Calidad del agua",
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "Helvetica",
+    "fontSize": 16,
+    "color": "#717171",
+    "wrapText": false,
+    "className": "",
+    "value": "payload",
+    "valueType": "msg",
+    "x": 590,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90026",
+    "type": "ui-text",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90007",
+    "order": 4,
+    "width": 4,
+    "height": 1,
+    "name": "Peso de la maceta",
+    "label": "Peso de la maceta",
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "Helvetica",
+    "fontSize": 16,
+    "color": "#717171",
+    "wrapText": false,
+    "className": "",
+    "value": "payload",
+    "valueType": "msg",
+    "x": 590,
+    "y": 440,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90017",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "grupo Actuadores",
+    "func": "// Estado CONFIRMADO de los actuadores -> interruptores (modo decouple)\nconst ultimo = context.get(\"ultimo\") || {};\nconst si_cambia = (clave, valor) => {\n    if (valor === undefined || valor === null) return null;\n    const huella = JSON.stringify(valor);\n    if (huella === ultimo[clave]) return null;\n    ultimo[clave] = huella;\n    return { payload: valor };\n};\nconst a = global.get(\"actuadores\") || {};\nconst v = global.get(\"ventilacion\");\nconst salidas = [\n    si_cambia(\"bomba\", a.bomba?.estado),\n    si_cambia(\"ventilador\", a.ventilador?.estado),\n    si_cambia(\"vent\", v ? v.motivo : undefined)\n];\ncontext.set(\"ultimo\", ultimo);\nreturn salidas;",
+    "outputs": 3,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 350,
+    "y": 660,
+    "wires": [
+      [
+        "d4e5f6a7b8c90027"
+      ],
+      [
+        "d4e5f6a7b8c90028"
+      ],
+      [
+        "d4e5f6a7b8c90029"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90018",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "grupo Estado",
+    "func": "// Resumen y tabla de problemas (global.problemas, sesión 3)\nconst ultimo = context.get(\"ultimo\") || {};\nconst si_cambia = (clave, valor) => {\n    if (valor === undefined || valor === null) return null;\n    const huella = JSON.stringify(valor);\n    if (huella === ultimo[clave]) return null;\n    ultimo[clave] = huella;\n    return { payload: valor };\n};\nconst p = global.get(\"problemas\") || {};\nconst filas = Object.entries(p).map(([fuente, info]) => ({\n    fuente,\n    motivo: info.motivo,\n    desde: new Date(info.desde).toLocaleTimeString(\"es-ES\")\n}));\nconst resumen = filas.length ? `⚠ ${filas.length} fuente(s) con problemas` : \"✓ Todo en orden\";\nconst salidas = [si_cambia(\"resumen\", resumen), si_cambia(\"tabla\", filas)];\ncontext.set(\"ultimo\", ultimo);\nreturn salidas;",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 500,
+    "wires": [
+      [
+        "d4e5f6a7b8c90030"
+      ],
+      [
+        "d4e5f6a7b8c90031"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90030",
+    "type": "ui-text",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90005",
+    "order": 1,
+    "width": 12,
+    "height": 1,
+    "name": "Estado",
+    "label": "Estado",
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "Helvetica",
+    "fontSize": 16,
+    "color": "#717171",
+    "wrapText": false,
+    "className": "",
+    "value": "payload",
+    "valueType": "msg",
+    "x": 560,
+    "y": 490,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90031",
+    "type": "ui-table",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90005",
+    "name": "Problemas",
+    "label": "",
+    "order": 2,
+    "width": 12,
+    "height": 0,
+    "maxrows": 0,
+    "passthru": false,
+    "autocols": true,
+    "showSearch": false,
+    "deselect": true,
+    "selectionType": "none",
+    "columns": null,
+    "mobileBreakpoint": "sm",
+    "mobileBreakpointType": "defaults",
+    "action": "replace",
+    "className": "",
+    "x": 570,
+    "y": 530,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90032",
+    "type": "comment",
+    "z": "d4e5f6a7b8c90001",
+    "name": "2 · Actuadores: el interruptor muestra el estado confirmado",
+    "info": "decouple = true: el indicador cambia cuando llega el estado del Shelly, no al hacer clic.",
+    "x": 270,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90027",
+    "type": "ui-switch",
+    "z": "d4e5f6a7b8c90001",
+    "name": "Bomba de riego",
+    "label": "Bomba de riego",
+    "group": "d4e5f6a7b8c90008",
+    "order": 1,
+    "width": 4,
+    "height": 1,
+    "passthru": false,
+    "decouple": true,
+    "topic": "bomba",
+    "topicType": "str",
+    "style": "",
+    "className": "",
+    "layout": "row-spread",
+    "clickableArea": "switch",
+    "onvalue": "on",
+    "onvalueType": "str",
+    "onicon": "",
+    "oncolor": "",
+    "offvalue": "off",
+    "offvalueType": "str",
+    "officon": "",
+    "offcolor": "",
+    "x": 600,
+    "y": 640,
+    "wires": [
+      [
+        "d4e5f6a7b8c90033"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90028",
+    "type": "ui-switch",
+    "z": "d4e5f6a7b8c90001",
+    "name": "Ventilador",
+    "label": "Ventilador",
+    "group": "d4e5f6a7b8c90008",
+    "order": 2,
+    "width": 4,
+    "height": 1,
+    "passthru": false,
+    "decouple": true,
+    "topic": "ventilador",
+    "topicType": "str",
+    "style": "",
+    "className": "",
+    "layout": "row-spread",
+    "clickableArea": "switch",
+    "onvalue": "on",
+    "onvalueType": "str",
+    "onicon": "",
+    "oncolor": "",
+    "offvalue": "off",
+    "offvalueType": "str",
+    "officon": "",
+    "offcolor": "",
+    "x": 590,
+    "y": 680,
+    "wires": [
+      [
+        "d4e5f6a7b8c90033"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90029",
+    "type": "ui-text",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90008",
+    "order": 3,
+    "width": 4,
+    "height": 1,
+    "name": "Ventilación",
+    "label": "Ventilación",
+    "format": "{{msg.payload}}",
+    "layout": "row-spread",
+    "style": false,
+    "font": "Helvetica",
+    "fontSize": 16,
+    "color": "#717171",
+    "wrapText": false,
+    "className": "",
+    "value": "payload",
+    "valueType": "msg",
+    "x": 590,
+    "y": 720,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90033",
+    "type": "change",
+    "z": "d4e5f6a7b8c90001",
+    "name": "equipo = topic",
+    "rules": [
+      {
+        "t": "set",
+        "p": "equipo",
+        "pt": "msg",
+        "to": "topic",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 800,
+    "y": 660,
+    "wires": [
+      [
+        "d4e5f6a7b8c90100"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90100",
+    "type": "link out",
+    "z": "d4e5f6a7b8c90001",
+    "name": "a comandos (S3)",
+    "mode": "link",
+    "links": [
+      "c3d4e5f6a7b80100"
+    ],
+    "x": 965,
+    "y": 660,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90034",
+    "type": "comment",
+    "z": "d4e5f6a7b8c90001",
+    "name": "3 · Tendencias",
+    "info": "Una gráfica por unidad: nunca dos ejes Y distintos en la misma gráfica.",
+    "x": 140,
+    "y": 780,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90036",
+    "type": "inject",
+    "z": "d4e5f6a7b8c90001",
+    "name": "cada 10 s",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "10",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 820,
+    "wires": [
+      [
+        "d4e5f6a7b8c90035"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90035",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "muestrear tendencias",
+    "func": "// Muestreo para las gráficas: un punto cada 10 s por serie\nconst s = global.get(\"sensores\") || {};\nconst meteo = global.get(\"meteo\");\nconst temp = [];\nif (s.dht22?.temperatura) temp.push({ topic: \"interior\", payload: s.dht22.temperatura.valor });\nif (meteo) temp.push({ topic: \"exterior\", payload: meteo.tempExterior });\nconst suelo = s.suelo?.humedad ? { topic: \"suelo\", payload: s.suelo.humedad.valor } : null;\n// Un array en una salida envía varios mensajes seguidos\nreturn [temp, suelo];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 820,
+    "wires": [
+      [
+        "d4e5f6a7b8c90037"
+      ],
+      [
+        "d4e5f6a7b8c90038"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90037",
+    "type": "ui-chart",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90009",
+    "name": "Temperatura (ºC)",
+    "label": "Temperatura (ºC)",
+    "order": 1,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "",
+    "xAxisProperty": "",
+    "xAxisPropertyType": "timestamp",
+    "xAxisType": "time",
+    "xAxisFormat": "",
+    "xAxisFormatType": "auto",
+    "xmin": "",
+    "xmax": "",
+    "yAxisLabel": "",
+    "yAxisProperty": "payload",
+    "yAxisPropertyType": "msg",
+    "ymin": "",
+    "ymax": "",
+    "bins": 10,
+    "action": "append",
+    "stackSeries": false,
+    "pointShape": "circle",
+    "pointRadius": 2,
+    "showLegend": true,
+    "removeOlder": 1,
+    "removeOlderUnit": "3600",
+    "removeOlderPoints": "",
+    "colors": [
+      "#0095FF",
+      "#FF7F0E",
+      "#2CA02C",
+      "#A347E1",
+      "#D62728",
+      "#FF9896",
+      "#9467BD",
+      "#C5B0D5",
+      "#FF0000"
+    ],
+    "textColor": [
+      "#666666"
+    ],
+    "textColorDefault": true,
+    "gridColor": [
+      "#e5e5e5"
+    ],
+    "gridColorDefault": true,
+    "width": 6,
+    "height": 6,
+    "className": "",
+    "interpolation": "linear",
+    "x": 590,
+    "y": 800,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90038",
+    "type": "ui-chart",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90009",
+    "name": "Humedad del suelo (%)",
+    "label": "Humedad del suelo (%)",
+    "order": 2,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "",
+    "xAxisProperty": "",
+    "xAxisPropertyType": "timestamp",
+    "xAxisType": "time",
+    "xAxisFormat": "",
+    "xAxisFormatType": "auto",
+    "xmin": "",
+    "xmax": "",
+    "yAxisLabel": "",
+    "yAxisProperty": "payload",
+    "yAxisPropertyType": "msg",
+    "ymin": 0,
+    "ymax": 100,
+    "bins": 10,
+    "action": "append",
+    "stackSeries": false,
+    "pointShape": "circle",
+    "pointRadius": 2,
+    "showLegend": true,
+    "removeOlder": 1,
+    "removeOlderUnit": "3600",
+    "removeOlderPoints": "",
+    "colors": [
+      "#0095FF",
+      "#FF7F0E",
+      "#2CA02C",
+      "#A347E1",
+      "#D62728",
+      "#FF9896",
+      "#9467BD",
+      "#C5B0D5",
+      "#FF0000"
+    ],
+    "textColor": [
+      "#666666"
+    ],
+    "textColorDefault": true,
+    "gridColor": [
+      "#e5e5e5"
+    ],
+    "gridColorDefault": true,
+    "width": 6,
+    "height": 6,
+    "className": "",
+    "interpolation": "linear",
+    "x": 600,
+    "y": 840,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90039",
+    "type": "comment",
+    "z": "d4e5f6a7b8c90001",
+    "name": "4 · Consignas",
+    "info": "Los umbrales viven en global.umbrales: los usan S1 (riego) y S2 (ventilación).",
+    "x": 140,
+    "y": 900,
+    "wires": []
+  },
+  {
+    "id": "d4e5f6a7b8c90041",
+    "type": "inject",
+    "z": "d4e5f6a7b8c90001",
+    "name": "umbrales por defecto",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "{\"suelo\":{\"critico\":25,\"aviso\":35},\"temperatura\":{\"aviso\":30,\"critico\":35},\"margenExterior\":2}",
+    "payloadType": "json",
+    "x": 170,
+    "y": 960,
+    "wires": [
+      [
+        "d4e5f6a7b8c90040"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90040",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "sincronizar consignas",
+    "func": "// Carga los umbrales por defecto si no existen y sincroniza los deslizadores\nlet u = global.get(\"umbrales\");\nif (!u) {\n    u = msg.payload;          // valores por defecto del inject\n    global.set(\"umbrales\", u);\n}\nreturn [\n    { payload: u.suelo.critico },\n    { payload: u.suelo.aviso },\n    { payload: u.temperatura.aviso }\n];",
+    "outputs": 3,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 960,
+    "wires": [
+      [
+        "d4e5f6a7b8c90042"
+      ],
+      [
+        "d4e5f6a7b8c90043"
+      ],
+      [
+        "d4e5f6a7b8c90044"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90042",
+    "type": "ui-slider",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90010",
+    "name": "Suelo: umbral crítico (%)",
+    "label": "Suelo: umbral crítico (%)",
+    "tooltip": "",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "passthru": false,
+    "outs": "end",
+    "topic": "suelo.critico",
+    "topicType": "str",
+    "thumbLabel": true,
+    "showTicks": "always",
+    "min": 5,
+    "max": 60,
+    "step": 1,
+    "className": "",
+    "iconPrepend": "",
+    "iconAppend": "",
+    "color": "",
+    "colorTrack": "",
+    "colorThumb": "",
+    "showTextField": true,
+    "x": 660,
+    "y": 920,
+    "wires": [
+      [
+        "d4e5f6a7b8c90045"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90043",
+    "type": "ui-slider",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90010",
+    "name": "Suelo: umbral de aviso (%)",
+    "label": "Suelo: umbral de aviso (%)",
+    "tooltip": "",
+    "order": 2,
+    "width": 6,
+    "height": 1,
+    "passthru": false,
+    "outs": "end",
+    "topic": "suelo.aviso",
+    "topicType": "str",
+    "thumbLabel": true,
+    "showTicks": "always",
+    "min": 5,
+    "max": 80,
+    "step": 1,
+    "className": "",
+    "iconPrepend": "",
+    "iconAppend": "",
+    "color": "",
+    "colorTrack": "",
+    "colorThumb": "",
+    "showTextField": true,
+    "x": 660,
+    "y": 960,
+    "wires": [
+      [
+        "d4e5f6a7b8c90045"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90044",
+    "type": "ui-slider",
+    "z": "d4e5f6a7b8c90001",
+    "group": "d4e5f6a7b8c90010",
+    "name": "Temperatura: aviso (ºC)",
+    "label": "Temperatura: aviso (ºC)",
+    "tooltip": "",
+    "order": 3,
+    "width": 6,
+    "height": 1,
+    "passthru": false,
+    "outs": "end",
+    "topic": "temperatura.aviso",
+    "topicType": "str",
+    "thumbLabel": true,
+    "showTicks": "always",
+    "min": 15,
+    "max": 45,
+    "step": 1,
+    "className": "",
+    "iconPrepend": "",
+    "iconAppend": "",
+    "color": "",
+    "colorTrack": "",
+    "colorThumb": "",
+    "showTextField": true,
+    "x": 660,
+    "y": 1000,
+    "wires": [
+      [
+        "d4e5f6a7b8c90045"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90045",
+    "type": "function",
+    "z": "d4e5f6a7b8c90001",
+    "name": "actualizar umbrales",
+    "func": "// msg.topic = ruta del umbral (\"suelo.critico\"), msg.payload = nuevo valor\nconst u = global.get(\"umbrales\");\nconst [grupo, clave] = msg.topic.split(\".\");\nconst nuevo = structuredClone(u);\nnuevo[grupo][clave] = Number(msg.payload);\n\n// Validación: el umbral crítico del suelo debe quedar por debajo del de aviso\nif (nuevo.suelo.critico >= nuevo.suelo.aviso) {\n    // Rechazado: aviso al operador y los deslizadores vuelven a su valor\n    return [{ payload: \"Consigna rechazada: el umbral crítico debe ser menor que el de aviso\" }, { payload: u }];\n}\nglobal.set(\"umbrales\", nuevo);\nnode.status({ fill: \"green\", shape: \"dot\", text: `${msg.topic} = ${msg.payload}` });\nreturn [{ payload: `Consigna actualizada: ${msg.topic} = ${msg.payload}` }, { payload: nuevo }];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 910,
+    "y": 960,
+    "wires": [
+      [
+        "d4e5f6a7b8c90046"
+      ],
+      [
+        "d4e5f6a7b8c90040"
+      ]
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90046",
+    "type": "ui-notification",
+    "z": "d4e5f6a7b8c90001",
+    "ui": "d4e5f6a7b8c90002",
+    "position": "top right",
+    "colorDefault": true,
+    "color": null,
+    "displayTime": "3",
+    "showCountdown": true,
+    "outputs": 1,
+    "allowDismiss": true,
+    "dismissText": "Cerrar",
+    "allowConfirm": false,
+    "confirmText": "Confirmar",
+    "raw": false,
+    "className": "",
+    "name": "aviso al operador",
+    "x": 1120,
+    "y": 940,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d4e5f6a7b8c90002",
+    "type": "ui-base",
+    "name": "Invernadero",
+    "path": "/dashboard",
+    "appIcon": "",
+    "includeClientData": true,
+    "acceptsClientConfig": [
+      "ui-notification",
+      "ui-control"
+    ],
+    "showPathInSidebar": false,
+    "headerContent": "page",
+    "navigationStyle": "default",
+    "titleBarStyle": "default",
+    "showReconnectNotification": true,
+    "notificationDisplayTime": 1,
+    "showDisconnectNotification": true,
+    "allowInstall": false
+  },
+  {
+    "id": "d4e5f6a7b8c90003",
+    "type": "ui-theme",
+    "name": "HMI invernadero",
+    "colors": {
+      "surface": "#ffffff",
+      "primary": "#0d74ce",
+      "bgPage": "#eef0f2",
+      "groupBg": "#ffffff",
+      "groupOutline": "#d9d9e0"
+    },
+    "sizes": {
+      "density": "default",
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "4px",
+      "widgetGap": "12px"
+    }
+  },
+  {
+    "id": "d4e5f6a7b8c90004",
+    "type": "ui-page",
+    "name": "Invernadero",
+    "ui": "d4e5f6a7b8c90002",
+    "path": "/invernadero",
+    "icon": "sprout",
+    "layout": "grid",
+    "theme": "d4e5f6a7b8c90003",
+    "breakpoints": [
+      {
+        "name": "Default",
+        "px": 0,
+        "cols": 3
+      },
+      {
+        "name": "Tablet",
+        "px": 576,
+        "cols": 6
+      },
+      {
+        "name": "Small Desktop",
+        "px": 768,
+        "cols": 9
+      },
+      {
+        "name": "Desktop",
+        "px": 1024,
+        "cols": 12
+      }
+    ],
+    "order": 1,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "d4e5f6a7b8c90005",
+    "type": "ui-group",
+    "name": "Estado del sistema",
+    "page": "d4e5f6a7b8c90004",
+    "width": 12,
+    "height": 1,
+    "order": 1,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default"
+  },
+  {
+    "id": "d4e5f6a7b8c90006",
+    "type": "ui-group",
+    "name": "Clima",
+    "page": "d4e5f6a7b8c90004",
+    "width": 4,
+    "height": 1,
+    "order": 2,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default"
+  },
+  {
+    "id": "d4e5f6a7b8c90007",
+    "type": "ui-group",
+    "name": "Riego y agua",
+    "page": "d4e5f6a7b8c90004",
+    "width": 4,
+    "height": 1,
+    "order": 3,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default"
+  },
+  {
+    "id": "d4e5f6a7b8c90008",
+    "type": "ui-group",
+    "name": "Actuadores",
+    "page": "d4e5f6a7b8c90004",
+    "width": 4,
+    "height": 1,
+    "order": 4,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default"
+  },
+  {
+    "id": "d4e5f6a7b8c90009",
+    "type": "ui-group",
+    "name": "Tendencias (última hora)",
+    "page": "d4e5f6a7b8c90004",
+    "width": 12,
+    "height": 1,
+    "order": 5,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default"
+  },
+  {
+    "id": "d4e5f6a7b8c90010",
+    "type": "ui-group",
+    "name": "Consignas",
+    "page": "d4e5f6a7b8c90004",
+    "width": 6,
+    "height": 1,
+    "order": 6,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default"
+  }
+]
