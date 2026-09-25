@@ -1,0 +1,18 @@
+# Misma ACL que la Raspberry Pi (rpi/mosquitto/acl), más:
+#  - el usuario 'simulador', que publica los datos del invernadero
+#  - acceso del alumno a simulador/# para provocar fallos
+
+user profesor
+topic readwrite #
+
+user simulador
+topic readwrite invernadero/#
+topic read simulador/#
+
+user alumno
+topic read invernadero/#
+topic write invernadero/shelly/+/relay/0/command
+topic write invernadero/shelly/command
+topic readwrite alumnos/#
+topic read $SYS/#
+topic write simulador/#

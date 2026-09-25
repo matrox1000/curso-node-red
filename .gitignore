@@ -1,0 +1,13 @@
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# Configuración local del entorno (contraseñas)
+docker/.env
+
+# Material de referencia con credenciales reales: no se publica
+.claude/documentacion*/
+.claude/settings.local.json
+
+# Python
+__pycache__/

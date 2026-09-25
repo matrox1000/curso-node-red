@@ -1,0 +1,15 @@
+# ACL del broker del invernadero (/etc/mosquitto/acl)
+# Los mensajes que llegan por los puentes no pasan por esta ACL.
+
+# Profesorado: acceso completo
+user profesor
+topic readwrite #
+
+# Alumnado: lee todo el invernadero, solo puede actuar sobre los Shelly
+# y tiene un espacio propio (alumnos/<nombre>/...) para sus pruebas.
+user alumno
+topic read invernadero/#
+topic write invernadero/shelly/+/relay/0/command
+topic write invernadero/shelly/command
+topic readwrite alumnos/#
+topic read $SYS/#

@@ -1,0 +1,76 @@
+# Entorno del curso de Node-RED (Sistemas Industriales)
+#
+#   cp .env.example .env      # y elige laboratorio o casa
+#   docker compose up -d --build
+#
+# Servicios:
+#   node-red   http://localhost:1880   (panel: http://localhost:1880/dashboard)
+#   influxdb   http://localhost:8086   (se usa desde la sesión 5)
+#   mosquitto  localhost:1883          (solo perfil "casa")
+#   simulador  publica el invernadero  (solo perfil "casa")
+
+name: curso-node-red
+
+services:
+  node-red:
+    build: ./node-red
+    restart: unless-stopped
+    ports:
+      - "1880:1880"
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+      MQTT_HOST: ${MQTT_HOST:-mosquitto}
+      MQTT_PORT: ${MQTT_PORT:-1883}
+    volumes:
+      - node-red-data:/data
+
+  influxdb:
+    image: influxdb:2.7
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_USER:-admin}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_PASS:-invernadero}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG:-invernadero}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUX_BUCKET:-sensores}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_TOKEN:-token-curso-node-red}
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+
+  # --- Solo fuera del laboratorio (COMPOSE_PROFILES=casa) ---------------
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    profiles: ["casa"]
+    restart: unless-stopped
+    entrypoint: ["sh", "/mosquitto/config/entrypoint.sh"]
+    ports:
+      - "1883:1883"
+    environment:
+      MQTT_ALUMNO_PASS: ${MQTT_ALUMNO_PASS:-alumno}
+      MQTT_PROFESOR_PASS: ${MQTT_PROFESOR_PASS:-profesor}
+      MQTT_SIMULADOR_PASS: ${MQTT_SIMULADOR_PASS:-simulador}
+    volumes:
+      - ./mosquitto:/mosquitto/config:ro
+      - mosquitto-data:/mosquitto/data
+
+  simulador:
+    build: ./simulador
+    profiles: ["casa"]
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      MQTT_USER: simulador
+      MQTT_PASS: ${MQTT_SIMULADOR_PASS:-simulador}
+      SIM_VELOCIDAD: ${SIM_VELOCIDAD:-60}
+
+volumes:
+  node-red-data:
+  influxdb-data:
+  mosquitto-data:
