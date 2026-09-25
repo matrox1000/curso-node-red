@@ -77,3 +77,19 @@ Broker embebido en el ESP32-S3 "Actuador" (`192.168.0.100`); los Shelly se conec
 - El simulador (`docker/simulador/simulador.py`) publica los topics `invernadero/...` con la misma cadencia y formato que los ESP32. Shelly simulados: `shellyplug-s-SIM001` = **bomba de riego** (sube la humedad del suelo, vacía el depósito y sube el peso), `shellyplug-s-SIM002` = **ventilador** (baja la temperatura). `SIM_VELOCIDAD=60`: 1 min real = 1 h simulada.
 - Control del simulador: `simulador/fallo/<nodo>` ← `ok` | `sensor` (deja de publicar; `online` sigue en `1`) | `desconectado` (deja de publicar y `online`=`0`); `simulador/deposito/rellenar` ← cualquier payload.
 - Flujos exportados de referencia en `docs/public/flows/sN-<slug>.json`.
+- Variables de entorno de Node-RED (docker-compose): `MQTT_HOST`, `MQTT_PORT` (S1), `INVERNADERO_LAT`, `INVERNADERO_LON` (S2), `SHELLY_BOMBA`, `SHELLY_VENTILADOR` (S3; por defecto los IDs del simulador, en el laboratorio los reales que da el profesorado).
+
+## Contrato del contexto global (lo que cada sesión deja para las siguientes)
+
+Las sesiones posteriores deben leer estos nombres tal cual; no inventar otros.
+
+| Clave global | La crea | Contenido |
+|--------------|---------|-----------|
+| `meteo` | S2 | `{ tempExterior, humExterior, lluvia6h, probLluviaMax, et0_6h, ts }` |
+| `ventilacion` | S2 | `{ interior, exterior, ventilar, motivo }` |
+| `decision` | S2 (entregable) | decisión conjunta `{ regar, ventilar, ... }` |
+| `sensores` | S3 | `sensores[<nodo>][<magnitud>] = { valor, unidad, ts }` |
+| `problemas` | S3 | `problemas[<topic o invernadero/<nodo>>] = { motivo: "sin datos" \| "ESP32 inalcanzable", desde }` |
+| `actuadores` | S3 | `actuadores[<equipo>] = { estado: "on" \| "off", id, ts }`, equipo ∈ `bomba`, `ventilador` |
+
+Modelo de datos normalizado (salida 1 de `normalizar`, S3): `msg.payload = { sensor, magnitud, valor, unidad, ts, retenido }`, `msg.topic` original, `msg.tipo = "dato"`. Eventos de `estado de sensores` (S3): `{ fuente, estado: "sin datos" | "recuperado" | "inalcanzable" | "alcanzable", ts }` — son la base de las alarmas de la S6.

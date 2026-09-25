@@ -24,6 +24,9 @@ services:
       # Coordenadas del invernadero para las APIs meteorológicas (sesión 2)
       INVERNADERO_LAT: ${INVERNADERO_LAT:-38.3852}
       INVERNADERO_LON: ${INVERNADERO_LON:--0.5143}
+      # Shelly que controla cada equipo (sesión 3)
+      SHELLY_BOMBA: ${SHELLY_BOMBA:-shellyplug-s-SIM001}
+      SHELLY_VENTILADOR: ${SHELLY_VENTILADOR:-shellyplug-s-SIM002}
     volumes:
       - node-red-data:/data
 

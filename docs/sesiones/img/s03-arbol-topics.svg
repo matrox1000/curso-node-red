@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 545" role="img" aria-labelledby="t d">
+  <title id="t">Árbol de topics del broker de la Raspberry Pi</title>
+  <desc id="d">Bajo invernadero cuelgan siete nodos (dht11, dht22, balanza, ultrasonidos, suelo, tds y actuador) con sus magnitudes y un topic online que genera la Raspberry Pi. El patrón invernadero/+/+ recoge exactamente esos topics de tres niveles. Bajo invernadero/shelly cuelgan el estado, la potencia, la energía y la disponibilidad de cada Shelly, y los topics de comando en los que publicas tú; invernadero/shelly/# los recoge todos.</desc>
+  <defs><marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .titulo { font-size: 14px; font-weight: 600; }
+    .n { font-size: 13px; }
+    .chip { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; }
+    .sub { font-size: 12px; fill: #475569; }
+    .etiqueta { font-size: 11px; fill: #64748b; }
+    .codigo { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13px; font-weight: 700; }
+  </style>
+  <rect class="superficie" x="0.5" y="0.5" width="959" height="544" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+  <rect x="20" y="191" width="130" height="38" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="85" y="215" text-anchor="middle" class="codigo">invernadero</text>
+  <path d="M150,210 H168 V49 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="34" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="54" text-anchor="middle" class="chip">dht11</text>
+  <line x1="310" y1="49" x2="336" y2="49" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="36" width="96" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="388" y="53" text-anchor="middle" class="chip">temperatura</text>
+  <rect x="444" y="36" width="68" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="478" y="53" text-anchor="middle" class="chip">humedad</text>
+  <rect x="520" y="36" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="550.5" y="53" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V95 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="80" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="100" text-anchor="middle" class="chip">dht22</text>
+  <line x1="310" y1="95" x2="336" y2="95" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="82" width="96" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="388" y="99" text-anchor="middle" class="chip">temperatura</text>
+  <rect x="444" y="82" width="68" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="478" y="99" text-anchor="middle" class="chip">humedad</text>
+  <rect x="520" y="82" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="550.5" y="99" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V141 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="126" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="146" text-anchor="middle" class="chip">balanza</text>
+  <line x1="310" y1="141" x2="336" y2="141" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="128" width="46" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="363" y="145" text-anchor="middle" class="chip">peso</text>
+  <rect x="394" y="128" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="424.5" y="145" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V187 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="172" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="192" text-anchor="middle" class="chip">ultrasonidos</text>
+  <line x1="310" y1="187" x2="336" y2="187" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="174" width="82" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="381" y="191" text-anchor="middle" class="chip">distancia</text>
+  <rect x="430" y="174" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="460.5" y="191" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V233 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="218" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="238" text-anchor="middle" class="chip">suelo</text>
+  <line x1="310" y1="233" x2="336" y2="233" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="220" width="68" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="374" y="237" text-anchor="middle" class="chip">humedad</text>
+  <rect x="416" y="220" width="68" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="450" y="237" text-anchor="middle" class="chip">lectura</text>
+  <rect x="492" y="220" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="522.5" y="237" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V279 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="264" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="284" text-anchor="middle" class="chip">tds</text>
+  <line x1="310" y1="279" x2="336" y2="279" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="266" width="39" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="359.5" y="283" text-anchor="middle" class="chip">tds</text>
+  <rect x="387" y="266" width="68" height="26" rx="13" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="421" y="283" text-anchor="middle" class="chip">voltaje</text>
+  <rect x="463" y="266" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="493.5" y="283" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V325 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="310" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="330" text-anchor="middle" class="chip">actuador</text>
+  <line x1="310" y1="325" x2="336" y2="325" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="312" width="61" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="370.5" y="329" text-anchor="middle" class="chip">online</text>
+  <path d="M150,210 H168 V371 H188" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="190" y="356" width="120" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="250" y="376" text-anchor="middle" class="chip">shelly</text>
+  <line x1="310" y1="371" x2="336" y2="371" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="358" width="96" height="26" rx="13" fill="#fef3c7" stroke="#d97706"/>
+  <text x="388" y="375" text-anchor="middle" class="chip">&lt;id&gt;/online</text>
+  <rect x="444" y="358" width="103" height="26" rx="13" fill="#fef3c7" stroke="#d97706"/>
+  <text x="495.5" y="375" text-anchor="middle" class="chip">&lt;id&gt;/relay/0</text>
+  <path d="M325,371 V417 H336" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="404" width="146" height="26" rx="13" fill="#fef3c7" stroke="#d97706"/>
+  <text x="413" y="421" text-anchor="middle" class="chip">&lt;id&gt;/relay/0/power</text>
+  <rect x="494" y="404" width="153" height="26" rx="13" fill="#fef3c7" stroke="#d97706"/>
+  <text x="570.5" y="421" text-anchor="middle" class="chip">&lt;id&gt;/relay/0/energy</text>
+  <path d="M325,371 V463 H336" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+  <rect x="340" y="450" width="196" height="26" rx="13" fill="#fff1f2" stroke="#e11d48"/>
+  <text x="438" y="467" text-anchor="middle" class="chip">&lt;id&gt;/relay/0/command ← tú</text>
+  <rect x="544" y="450" width="103" height="26" rx="13" fill="#fff1f2" stroke="#e11d48"/>
+  <text x="595.5" y="467" text-anchor="middle" class="chip">command ← tú</text>
+  <path d="M700,36 h8 V338 h-8" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <text x="716" y="185" class="codigo" style="fill:#1e293b">invernadero/+/+</text>
+  <text x="716" y="203" class="sub">exactamente 3 niveles</text>
+  <path d="M700,358 h8 V476 h-8" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <text x="716" y="415" class="codigo" style="fill:#1e293b">invernadero/shelly/#</text>
+  <text x="716" y="433" class="sub">todo lo que cuelga</text>
+  <text x="20" y="520" class="sub">Leyenda:</text>
+  <rect x="86" y="507" width="26" height="16" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="120" y="520" class="sub">sensor (ESP32)</text>
+  <rect x="242" y="507" width="26" height="16" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-dasharray="4 3"/>
+  <text x="276" y="520" class="sub">estado del puente (RPi)</text>
+  <rect x="455" y="507" width="26" height="16" rx="8" fill="#fef3c7" stroke="#d97706"/>
+  <text x="489" y="520" class="sub">Shelly</text>
+  <rect x="559" y="507" width="26" height="16" rx="8" fill="#fff1f2" stroke="#e11d48"/>
+  <text x="593" y="520" class="sub">Node-RED (tú)</text>
+</svg>

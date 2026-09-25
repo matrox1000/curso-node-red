@@ -137,7 +137,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 
 **Entregable:** flujo que consulta la previsión meteorológica y la combina con los datos del invernadero, por ejemplo para ventilar solo si fuera hace más fresco que dentro. Además, un endpoint REST que devuelve el estado actual.
 
-### Sesión 3 — MQTT e IoT en la red del invernadero
+### [Sesión 3 — MQTT e IoT en la red del invernadero](/sesiones/03-mqtt-iot)
 
 **Objetivos**
 
@@ -157,7 +157,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 
 **Node-RED como plataforma:** nodos de configuración (broker compartido entre flujos) y subflujos para tratar todos los sensores con la misma lógica.
 
-**Entregable:** sistema que integra por MQTT todos los sensores del invernadero en el modelo de datos común, reacciona a sus mensajes y detecta cuando un sensor deja de publicar.
+**Entregable:** sistema que integra por MQTT todos los sensores del invernadero en el modelo de datos común, detecta cuándo un sensor deja de publicar o un ESP32 es inalcanzable, y riega automáticamente enviando comandos a la bomba con confirmación de su estado.
 
 ### Sesión 4 — Paneles de monitorización
 

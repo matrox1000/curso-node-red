@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 470" role="img" aria-labelledby="t d">
+  <title id="t">Recorrido de un comando a un Shelly y de su confirmación</title>
+  <desc id="d">Node-RED publica "on" en invernadero/shelly/id/relay/0/command con QoS 1 y sin retain. La Raspberry Pi lo reenvía por el bridge al broker del ESP32 actuador como shellies/id/relay/0/command con QoS 0, y el Shelly lo recibe. El Shelly enciende el relé y publica su estado "on" en shellies/id/relay/0, que vuelve por el bridge a la Raspberry Pi como invernadero/shelly/id/relay/0 y llega a Node-RED: el comando queda confirmado. El QoS efectivo de extremo a extremo es el menor del camino: 0.</desc>
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .titulo { font-size: 14px; font-weight: 600; }
+    .sub { font-size: 12px; fill: #475569; }
+    .msg { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 11px; }
+    .qos { font-size: 11px; font-weight: 700; }
+    .vida { stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 4 4; }
+    .cable { stroke: #64748b; stroke-width: 1.6; fill: none; }
+  </style>
+
+  <rect class="superficie" x="0.5" y="0.5" width="939" height="469" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+
+  <!-- Participantes -->
+  <rect x="50" y="20" width="160" height="46" rx="10" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="130" y="48" text-anchor="middle" class="titulo">Node-RED</text>
+  <rect x="300" y="20" width="160" height="46" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="380" y="41" text-anchor="middle" class="titulo">RPi · Mosquitto</text>
+  <text x="380" y="58" text-anchor="middle" class="sub">bridge</text>
+  <rect x="530" y="20" width="160" height="46" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="610" y="41" text-anchor="middle" class="titulo">ESP32 actuador</text>
+  <text x="610" y="58" text-anchor="middle" class="sub">broker embebido</text>
+  <rect x="740" y="20" width="160" height="46" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="820" y="48" text-anchor="middle" class="titulo">Shelly (bomba)</text>
+
+  <line x1="130" y1="66" x2="130" y2="436" class="vida"/>
+  <line x1="380" y1="66" x2="380" y2="436" class="vida"/>
+  <line x1="610" y1="66" x2="610" y2="436" class="vida"/>
+  <line x1="820" y1="66" x2="820" y2="436" class="vida"/>
+
+  <!-- Ida: comando -->
+  <text x="255" y="90" text-anchor="middle" class="msg">invernadero/shelly/‹id›/</text>
+  <text x="255" y="104" text-anchor="middle" class="msg">relay/0/command  "on"</text>
+  <text x="255" y="118" text-anchor="middle" class="qos" style="fill:#9f1239">QoS 1 · sin retain</text>
+  <line x1="130" y1="126" x2="378" y2="126" class="cable" marker-end="url(#flecha)"/>
+
+  <text x="495" y="150" text-anchor="middle" class="msg">shellies/‹id›/relay/0/command</text>
+  <text x="495" y="166" text-anchor="middle" class="qos" style="fill:#6d28d9">"on" · QoS 0 (bridge "out 0")</text>
+  <line x1="380" y1="174" x2="608" y2="174" class="cable" marker-end="url(#flecha)"/>
+
+  <text x="715" y="214" text-anchor="middle" class="qos" style="fill:#6d28d9">mismo topic · QoS 0</text>
+  <line x1="610" y1="222" x2="818" y2="222" class="cable" marker-end="url(#flecha)"/>
+
+  <rect x="760" y="236" width="120" height="30" rx="6" fill="#fef3c7" stroke="#d97706"/>
+  <text x="820" y="256" text-anchor="middle" class="sub">relé → ON</text>
+
+  <!-- Vuelta: estado -->
+  <text x="715" y="286" text-anchor="middle" class="msg">shellies/‹id›/relay/0</text>
+  <text x="715" y="300" text-anchor="middle" class="msg">"on" · retain</text>
+  <line x1="820" y1="308" x2="612" y2="308" class="cable" marker-end="url(#flecha)"/>
+
+  <text x="495" y="328" text-anchor="middle" class="sub">bridge "in"</text>
+  <text x="495" y="342" text-anchor="middle" class="msg">invernadero/shelly/‹id›/relay/0</text>
+  <line x1="610" y1="350" x2="382" y2="350" class="cable" marker-end="url(#flecha)"/>
+
+  <text x="255" y="370" text-anchor="middle" class="msg">invernadero/shelly/‹id›/relay/0</text>
+  <text x="255" y="384" text-anchor="middle" class="msg">"on"</text>
+  <line x1="380" y1="392" x2="132" y2="392" class="cable" marker-end="url(#flecha)"/>
+
+  <rect x="50" y="402" width="160" height="28" rx="6" fill="#dcfce7" stroke="#0ca30c"/>
+  <text x="130" y="421" text-anchor="middle" class="sub">✓ comando confirmado</text>
+
+  <text x="470" y="456" text-anchor="middle" class="sub">El QoS de extremo a extremo es el menor del camino: aquí, 0. La confirmación la da el estado que publica el Shelly, no el QoS.</text>
+</svg>

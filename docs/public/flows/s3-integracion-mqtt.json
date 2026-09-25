@@ -1,0 +1,534 @@
+[
+  {
+    "id": "c3d4e5f6a7b80001",
+    "type": "tab",
+    "label": "S3 · Integración MQTT",
+    "disabled": false,
+    "info": "Sesión 3: todos los sensores con una suscripción, modelo de datos común, watchdog y comandos a los Shelly."
+  },
+  {
+    "id": "c3d4e5f6a7b80002",
+    "type": "comment",
+    "z": "c3d4e5f6a7b80001",
+    "name": "1 · Todos los sensores con una suscripción",
+    "info": "invernadero/+/+ recibe las magnitudes y los topics online de la RPi.",
+    "x": 210,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80003",
+    "type": "mqtt in",
+    "z": "c3d4e5f6a7b80001",
+    "name": "invernadero/+/+",
+    "topic": "invernadero/+/+",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "a1b2c3d4e5f600b1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "c3d4e5f6a7b80004"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80004",
+    "type": "function",
+    "z": "c3d4e5f6a7b80001",
+    "name": "normalizar",
+    "func": "// invernadero/<nodo>/<magnitud>  ->  modelo de datos común\n// Salidas: 1 datos · 2 estado del puente (online) · 3 descartados\nconst UNIDADES = { temperatura: \"ºC\", humedad: \"%\", distancia: \"cm\", peso: \"g\", lectura: \"ADC\", tds: \"ppm\", voltaje: \"V\" };\n// Límites físicos de cada magnitud: fuera de ellos la lectura es un error del sensor\nconst RANGOS = { temperatura: [-20, 60], humedad: [0, 100], distancia: [2, 450], peso: [-100, 20000], lectura: [0, 4095], tds: [0, 2000], voltaje: [0, 3.3] };\n\nconst [, sensor, magnitud] = msg.topic.split(\"/\");\nconst texto = String(msg.payload).trim();\n\nif (magnitud === \"online\") {\n    msg.tipo = \"online\";\n    msg.payload = { sensor, valor: Number(texto) };\n    return [null, msg, null];\n}\n\nconst valor = Number(texto);\nconst rango = RANGOS[magnitud];\nif (!rango || texto === \"\" || !Number.isFinite(valor) || valor < rango[0] || valor > rango[1]) {\n    msg.payload = { topic: msg.topic, recibido: texto, motivo: rango ? \"valor no válido\" : \"magnitud desconocida\" };\n    return [null, null, msg];\n}\n\nmsg.tipo = \"dato\";\nmsg.payload = {\n    sensor,\n    magnitud,\n    valor,\n    unidad: UNIDADES[magnitud],\n    ts: Date.now(),                 // hora de recepción, no de medida\n    retenido: msg.retain === true   // true: último valor conocido, entregado al suscribirse\n};\nreturn [msg, null, null];",
+    "outputs": 3,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 100,
+    "wires": [
+      [
+        "c3d4e5f6a7b80005",
+        "c3d4e5f6a7b80006",
+        "c3d4e5f6a7b80007",
+        "c3d4e5f6a7b80009"
+      ],
+      [
+        "c3d4e5f6a7b80009"
+      ],
+      [
+        "c3d4e5f6a7b80011"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80005",
+    "type": "debug",
+    "z": "c3d4e5f6a7b80001",
+    "name": "datos normalizados",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 580,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80006",
+    "type": "function",
+    "z": "c3d4e5f6a7b80001",
+    "name": "guardar último valor",
+    "func": "// Último valor de cada magnitud, accesible desde cualquier pestaña\nconst p = msg.payload;\nconst sensores = global.get(\"sensores\") || {};\nsensores[p.sensor] = sensores[p.sensor] || {};\nsensores[p.sensor][p.magnitud] = { valor: p.valor, unidad: p.unidad, ts: p.ts };\nglobal.set(\"sensores\", sensores);\nreturn null;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 80,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80007",
+    "type": "trigger",
+    "z": "c3d4e5f6a7b80001",
+    "name": "watchdog 30 s",
+    "op1": "",
+    "op2": "sin datos",
+    "op1type": "nul",
+    "op2type": "str",
+    "duration": "30",
+    "extend": true,
+    "overrideDelay": false,
+    "units": "s",
+    "reset": "",
+    "bytopic": "topic",
+    "topic": "topic",
+    "outputs": 1,
+    "x": 570,
+    "y": 120,
+    "wires": [
+      [
+        "c3d4e5f6a7b80008"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80008",
+    "type": "change",
+    "z": "c3d4e5f6a7b80001",
+    "name": "tipo = silencio",
+    "rules": [
+      {
+        "t": "set",
+        "p": "tipo",
+        "pt": "msg",
+        "to": "silencio",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 760,
+    "y": 120,
+    "wires": [
+      [
+        "c3d4e5f6a7b80009"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80009",
+    "type": "function",
+    "z": "c3d4e5f6a7b80001",
+    "name": "estado de sensores",
+    "func": "// Mantiene la lista de fuentes con problemas y emite solo los cambios\nconst problemas = global.get(\"problemas\") || {};\nconst ahora = Date.now();\nlet evento = null;\n\nif (msg.tipo === \"silencio\") {\n    // El trigger avisa: este topic lleva demasiado tiempo sin publicar\n    if (!problemas[msg.topic]) {\n        problemas[msg.topic] = { motivo: \"sin datos\", desde: ahora };\n        evento = { fuente: msg.topic, estado: \"sin datos\" };\n    }\n} else if (msg.tipo === \"online\") {\n    // La RPi informa de si alcanza el ESP32\n    const clave = `invernadero/${msg.payload.sensor}`;\n    if (msg.payload.valor === 0 && !problemas[clave]) {\n        problemas[clave] = { motivo: \"ESP32 inalcanzable\", desde: ahora };\n        evento = { fuente: clave, estado: \"inalcanzable\" };\n    } else if (msg.payload.valor === 1 && problemas[clave]) {\n        delete problemas[clave];\n        evento = { fuente: clave, estado: \"alcanzable\" };\n    }\n} else if (msg.tipo === \"dato\" && problemas[msg.topic]) {\n    // Vuelven a llegar datos de un topic que estaba en silencio\n    delete problemas[msg.topic];\n    evento = { fuente: msg.topic, estado: \"recuperado\" };\n}\n\nglobal.set(\"problemas\", problemas);\nconst n = Object.keys(problemas).length;\nnode.status({ fill: n ? \"red\" : \"green\", shape: \"dot\", text: n ? `${n} con problemas` : \"todo OK\" });\n\nif (!evento) return null;\nmsg.payload = { ...evento, ts: new Date(ahora).toISOString() };\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 800,
+    "y": 180,
+    "wires": [
+      [
+        "c3d4e5f6a7b80010"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80010",
+    "type": "debug",
+    "z": "c3d4e5f6a7b80001",
+    "name": "eventos",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1000,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80011",
+    "type": "debug",
+    "z": "c3d4e5f6a7b80001",
+    "name": "descartados",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 580,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80012",
+    "type": "comment",
+    "z": "c3d4e5f6a7b80001",
+    "name": "2 · Actuadores (Shelly)",
+    "info": "En el laboratorio, envía comandos solo cuando el profesorado lo indique.",
+    "x": 170,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80013",
+    "type": "mqtt in",
+    "z": "c3d4e5f6a7b80001",
+    "name": "invernadero/shelly/#",
+    "topic": "invernadero/shelly/#",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "a1b2c3d4e5f600b1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 170,
+    "y": 340,
+    "wires": [
+      [
+        "c3d4e5f6a7b80014"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80014",
+    "type": "debug",
+    "z": "c3d4e5f6a7b80001",
+    "name": "todo lo de los Shelly",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 400,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80015",
+    "type": "inject",
+    "z": "c3d4e5f6a7b80001",
+    "name": "bomba ON",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "equipo",
+        "v": "bomba",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "on",
+    "payloadType": "str",
+    "x": 140,
+    "y": 400,
+    "wires": [
+      [
+        "c3d4e5f6a7b80020"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80016",
+    "type": "inject",
+    "z": "c3d4e5f6a7b80001",
+    "name": "bomba OFF",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "equipo",
+        "v": "bomba",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "off",
+    "payloadType": "str",
+    "x": 140,
+    "y": 440,
+    "wires": [
+      [
+        "c3d4e5f6a7b80020"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80017",
+    "type": "inject",
+    "z": "c3d4e5f6a7b80001",
+    "name": "ventilador ON",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "equipo",
+        "v": "ventilador",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "on",
+    "payloadType": "str",
+    "x": 150,
+    "y": 480,
+    "wires": [
+      [
+        "c3d4e5f6a7b80020"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80018",
+    "type": "inject",
+    "z": "c3d4e5f6a7b80001",
+    "name": "ventilador OFF",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "equipo",
+        "v": "ventilador",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "off",
+    "payloadType": "str",
+    "x": 150,
+    "y": 520,
+    "wires": [
+      [
+        "c3d4e5f6a7b80020"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80020",
+    "type": "function",
+    "z": "c3d4e5f6a7b80001",
+    "name": "a topic de comando",
+    "func": "// Traduce { equipo, payload } al topic de comando de su Shelly\nconst ids = { bomba: env.get(\"SHELLY_BOMBA\"), ventilador: env.get(\"SHELLY_VENTILADOR\") };\nconst id = ids[msg.equipo];\nif (!id) {\n    node.warn(`No hay Shelly configurado para \"${msg.equipo}\"`);\n    return null;\n}\nif (![\"on\", \"off\", \"toggle\"].includes(msg.payload)) {\n    node.warn(`Orden no válida: ${msg.payload}`);\n    return null;\n}\nmsg.topic = `invernadero/shelly/${id}/relay/0/command`;\nmsg.qos = 1;\nmsg.retain = false;   // un comando nunca se retiene\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 460,
+    "wires": [
+      [
+        "c3d4e5f6a7b80021"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80021",
+    "type": "mqtt out",
+    "z": "c3d4e5f6a7b80001",
+    "name": "comando",
+    "topic": "",
+    "qos": "",
+    "retain": "",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "a1b2c3d4e5f600b1",
+    "x": 580,
+    "y": 480,
+    "wires": []
+  },
+  {
+    "id": "c3d4e5f6a7b80019",
+    "type": "inject",
+    "z": "c3d4e5f6a7b80001",
+    "name": "pedir estado (update)",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "invernadero/shelly/command",
+    "payload": "update",
+    "payloadType": "str",
+    "x": 370,
+    "y": 540,
+    "wires": [
+      [
+        "c3d4e5f6a7b80021"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80022",
+    "type": "mqtt in",
+    "z": "c3d4e5f6a7b80001",
+    "name": "estado del relé",
+    "topic": "invernadero/shelly/+/relay/0",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "a1b2c3d4e5f600b1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 160,
+    "y": 600,
+    "wires": [
+      [
+        "c3d4e5f6a7b80023"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80023",
+    "type": "function",
+    "z": "c3d4e5f6a7b80001",
+    "name": "estado actuadores",
+    "func": "// invernadero/shelly/<id>/relay/0  ->  estado confirmado de cada equipo\nconst id = msg.topic.split(\"/\")[2];\nconst equipos = { [env.get(\"SHELLY_BOMBA\")]: \"bomba\", [env.get(\"SHELLY_VENTILADOR\")]: \"ventilador\" };\nconst equipo = equipos[id] || id;\n\nconst actuadores = global.get(\"actuadores\") || {};\nactuadores[equipo] = { estado: msg.payload, id, ts: Date.now() };\nglobal.set(\"actuadores\", actuadores);\n\nnode.status({ fill: msg.payload === \"on\" ? \"blue\" : \"grey\", shape: \"dot\", text: `${equipo}: ${msg.payload}` });\nmsg.payload = { equipo, estado: msg.payload };\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 600,
+    "wires": [
+      [
+        "c3d4e5f6a7b80024"
+      ]
+    ]
+  },
+  {
+    "id": "c3d4e5f6a7b80024",
+    "type": "debug",
+    "z": "c3d4e5f6a7b80001",
+    "name": "actuadores",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 580,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "a1b2c3d4e5f600b1",
+    "type": "mqtt-broker",
+    "name": "Broker invernadero",
+    "broker": "${MQTT_HOST}",
+    "port": "${MQTT_PORT}",
+    "clientid": "",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthRetain": "false",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closeRetain": "false",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willRetain": "false",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": ""
+  }
+]

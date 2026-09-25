@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" role="img" aria-labelledby="t d">
+  <title id="t">Watchdog con un nodo trigger de 30 segundos</title>
+  <desc id="d">El sensor publica cada 5 segundos hasta el segundo 35 y luego calla. Cada mensaje reinicia la cuenta atrás de 30 segundos del trigger. Como no llega nada, la cuenta llega a cero en el segundo 65 y se emite el evento sin datos. En el segundo 80 vuelve a llegar un mensaje: se emite recuperado y la cuenta atrás empieza de nuevo.</desc>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .titulo { font-size: 14px; font-weight: 600; }
+    .n { font-size: 13px; }
+    .chip { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; }
+    .sub { font-size: 12px; fill: #475569; }
+    .etiqueta { font-size: 11px; fill: #64748b; }
+    .codigo { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13px; font-weight: 700; }
+  </style>
+  <rect class="superficie" x="0.5" y="0.5" width="899" height="329" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+  <text x="20" y="75" class="titulo">Mensajes</text>
+  <text x="20" y="138" class="titulo">Cuenta atrás</text>
+  <text x="20" y="156" class="sub">del trigger (30 s)</text>
+  <text x="20" y="255" class="titulo">Estado</text>
+  <line x1="150" y1="40" x2="150" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="150" y="308" text-anchor="middle" class="etiqueta">0 s</text>
+  <line x1="217.61904761904762" y1="40" x2="217.61904761904762" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="217.61904761904762" y="308" text-anchor="middle" class="etiqueta">10 s</text>
+  <line x1="285.23809523809524" y1="40" x2="285.23809523809524" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="285.23809523809524" y="308" text-anchor="middle" class="etiqueta">20 s</text>
+  <line x1="352.85714285714283" y1="40" x2="352.85714285714283" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="352.85714285714283" y="308" text-anchor="middle" class="etiqueta">30 s</text>
+  <line x1="420.4761904761905" y1="40" x2="420.4761904761905" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="420.4761904761905" y="308" text-anchor="middle" class="etiqueta">40 s</text>
+  <line x1="488.0952380952381" y1="40" x2="488.0952380952381" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="488.0952380952381" y="308" text-anchor="middle" class="etiqueta">50 s</text>
+  <line x1="555.7142857142857" y1="40" x2="555.7142857142857" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="555.7142857142857" y="308" text-anchor="middle" class="etiqueta">60 s</text>
+  <line x1="623.3333333333333" y1="40" x2="623.3333333333333" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="623.3333333333333" y="308" text-anchor="middle" class="etiqueta">70 s</text>
+  <line x1="690.952380952381" y1="40" x2="690.952380952381" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="690.952380952381" y="308" text-anchor="middle" class="etiqueta">80 s</text>
+  <line x1="758.5714285714286" y1="40" x2="758.5714285714286" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="758.5714285714286" y="308" text-anchor="middle" class="etiqueta">90 s</text>
+  <line x1="826.1904761904761" y1="40" x2="826.1904761904761" y2="272" stroke="#eef0f2" stroke-width="1"/>
+  <text x="826.1904761904761" y="308" text-anchor="middle" class="etiqueta">100 s</text>
+  <line x1="150" y1="70" x2="860" y2="70" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="150" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="183.8095238095238" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="217.61904761904762" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="251.42857142857142" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="285.23809523809524" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="319.04761904761904" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="352.85714285714283" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="386.66666666666663" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="690.952380952381" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="724.7619047619048" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="758.5714285714286" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="792.3809523809524" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <circle cx="826.1904761904761" cy="70" r="5" fill="#16a34a" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="538.8095238095239" y="56" text-anchor="middle" class="sub">el sensor calla</text>
+  <line x1="150" y1="175" x2="860" y2="175" stroke="#cbd5e1" stroke-width="1"/>
+  <path d="M150,125 L183.8095238095238,133.33333333333331 L183.8095238095238,125 L217.61904761904762,133.33333333333331 L217.61904761904762,125 L251.42857142857142,133.33333333333331 L251.42857142857142,125 L285.23809523809524,133.33333333333331 L285.23809523809524,125 L319.04761904761904,133.33333333333331 L319.04761904761904,125 L352.85714285714283,133.33333333333331 L352.85714285714283,125 L386.66666666666663,133.33333333333331 L386.66666666666663,125 L589.5238095238095,175 L690.952380952381,175 L690.952380952381,125 L724.7619047619048,133.33333333333331 L724.7619047619048,125 L758.5714285714286,133.33333333333331 L758.5714285714286,125 L792.3809523809524,133.33333333333331 L792.3809523809524,125 L826.1904761904761,133.33333333333331 L826.1904761904761,125 L860,133.33333333333331" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="589.5238095238095" cy="175" r="5" fill="#d03b3b" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="581.5238095238095" y="195" text-anchor="end" class="sub">llega a 0: el trigger envía "sin datos"</text>
+  <text x="231.14285714285714" y="117" text-anchor="middle" class="etiqueta">cada mensaje la reinicia</text>
+  <rect x="150" y="236" width="439.5238095238095" height="28" fill="#0ca30c" fill-opacity="0.14" stroke="#0ca30c"/>
+  <circle cx="164" cy="250" r="5" fill="#0ca30c"/>
+  <text x="175" y="254" class="n">recibiendo datos</text>
+  <rect x="589.5238095238095" y="236" width="101.42857142857144" height="28" fill="#d03b3b" fill-opacity="0.14" stroke="#d03b3b"/>
+  <circle cx="603.5238095238095" cy="250" r="5" fill="#d03b3b"/>
+  <text x="614.5238095238095" y="254" class="n">sin datos</text>
+  <rect x="690.952380952381" y="236" width="169.04761904761904" height="28" fill="#0ca30c" fill-opacity="0.14" stroke="#0ca30c"/>
+  <circle cx="704.952380952381" cy="250" r="5" fill="#0ca30c"/>
+  <text x="715.952380952381" y="254" class="n">recuperado</text>
+</svg>
