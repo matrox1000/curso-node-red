@@ -27,7 +27,7 @@ Los **topics, payloads, IPs y actuadores reales** (incluidos 2 Shelly Plug S) es
 
 ## Entorno técnico
 
-- Node-RED se ejecuta con **Docker / docker-compose** en el PC del alumno, nunca con `npm install -g node-red`. Servicios del stack:
+- Node-RED se ejecuta con **Docker / docker-compose** en el PC del alumno. **Única excepción:** en la sesión 1 el alumno instala Node-RED de forma nativa (Node.js + `npm install -g node-red`) para entender qué es y qué ficheros tiene su directorio de usuario, y después pasa a Docker. Fuera de ese paso, ningún material debe pedir la instalación nativa. Servicios del stack:
   - `node-red` con **Dashboard 2.0** (`@flowfuse/node-red-dashboard`) preinstalado. **No usar** `node-red-dashboard` (1.0, obsoleto).
   - `mosquitto`: broker local para trabajar **fuera del laboratorio**. En el laboratorio se usa el broker de la RPi.
   - `influxdb`: series temporales. Alternativa SQL si se justifica.
@@ -40,7 +40,7 @@ No reordenar ni renombrar estas sesiones sin que el usuario lo pida explícitame
 
 | # | Título | Contenido principal | Entregable de sesión |
 |---|--------|---------------------|-----------------------|
-| 1 | Fundamentos de Node-RED y flujos de control | Entorno Docker, FBP, objeto `msg`, nodos core (`inject`, `debug`, `function`, `change`, `switch`), contexto; flujos de control sobre datos de sensores (simulados o del invernadero vía un `mqtt in` básico) | Flujo con lógica condicional sobre datos de sensores |
+| 1 | Fundamentos de Node-RED y flujos de control | Instalación nativa (Node.js, npm, `~/.node-red`) y paso al entorno Docker, FBP, objeto `msg`, nodos core (`inject`, `debug`, `function`, `change`, `switch`), contexto; flujos de control sobre datos de sensores (simulados o del invernadero vía un `mqtt in` básico) | Flujo con lógica condicional sobre datos de sensores |
 | 2 | Integración con APIs externas | `http request`, APIs REST (p. ej. meteorología sin clave como Open-Meteo), parsing JSON, gestión de errores y timeouts; `http in`/`http response` para exponer datos propios | Flujo que combina una API externa con los datos del invernadero |
 | 3 | MQTT e IoT en la red del invernadero | Conexión al broker de la RPi, topics y wildcards, QoS, retained, LWT, normalización de payloads de todos los sensores, comandos | Sistema que integra todos los sensores del invernadero por MQTT y reacciona a sus mensajes |
 | 4 | Paneles de monitorización | Dashboard 2.0: páginas, grupos, gauges, charts, controles; diseño tipo HMI | Panel de monitorización en tiempo real del invernadero |
@@ -49,8 +49,8 @@ No reordenar ni renombrar estas sesiones sin que el usuario lo pida explícitame
 | 7 | Agentes de IA y cierre | Llamada a LLM/agente desde un flujo, function calling simple sobre el estado/histórico del invernadero, integración final | Sistema integrado con asistente de IA |
 
 **Node-RED como plataforma** (punto 8 del usuario): cada sesión incluye un bloque breve con aspectos de la plataforma ligados a la práctica del día. Reparto:
-- S1: contexto, `link in/out`, organización de flujos, importar/exportar.
-- S2: `catch`/`status`/`complete`, variables de entorno.
+- S1: ficheros de una instalación (`settings.js`, `flows.json`, credenciales, paleta), contexto, organización con nombres y comentarios, importar/exportar.
+- S2: `catch`/`status`/`complete`, variables de entorno, `link in/out` y grupos.
 - S3: nodos de configuración y subflujos.
 - S4: Dashboard 2.0 (sustituto de 1.0).
 - S5: `filter` (RBE), `join`/`batch`, limitación de frecuencia.
@@ -168,7 +168,7 @@ Plantilla obligatoria para la página de cada sesión (`docs/sesiones/0N-slug.md
 ## Qué evitar
 
 - No generar contenido teórico extenso desconectado de un ejercicio práctico inmediato.
-- No asumir instalación local sin Docker.
+- No asumir instalación local sin Docker (salvo el paso de instalación nativa de la sesión 1).
 - No pedir a los alumnos que programen los ESP32: ya están programados.
 - No usar `node-red-dashboard` 1.0.
 - No añadir sesiones, protocolos o herramientas fuera de las 7 sesiones anteriores sin confirmarlo con el usuario primero.

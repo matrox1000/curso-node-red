@@ -296,7 +296,32 @@ Si el flujo no llega a un `http response` (por un error o un `switch` que descar
 
 Flujo de referencia de la práctica guiada: [s2-meteo-api.json](../flows/s2-meteo-api.json){download}. Al importarlo, Node-RED detectará que el nodo `Broker invernadero` ya existe si importaste el de la sesión 1: reutilízalo.
 
+### Paso 10 · Ver reaccionar al invernadero (solo en casa, 10 min)
+
+Con el simulador puedes encender el ventilador (Shelly `shellyplug-s-SIM002`) y ver cómo baja la temperatura interior y cambia tu decisión:
+
+```bash
+docker compose exec mosquitto mosquitto_pub -u alumno -P alumno \
+  -t invernadero/shelly/shellyplug-s-SIM002/relay/0/command -m on
+```
+
+Sigue la temperatura en el `debug` de `decidir ventilación` y en `/api/invernadero/estado`. Cambia `on` por `off` para apagarlo. Si has cambiado `MQTT_ALUMNO_PASS`, usa tu contraseña.
+
+::: danger No actúes sobre el invernadero real
+En el laboratorio los Shelly son compartidos y controlan equipos reales. El envío de comandos se trabaja en la sesión 3.
+:::
+
 ## Node-RED como plataforma
+
+### `link in` / `link out`: cables invisibles
+
+Cuando un flujo crece, los cables largos lo hacen ilegible. Un `link out` envía el mensaje a uno o varios `link in`, incluso en otra pestaña.
+
+**Ejercicio:** conecta la salida de `decidir ventilación` a un `link out` y crea en otra zona del lienzo un `link in` → `debug`. En la sesión 3 usarás este patrón para separar la "lógica" de las "salidas".
+
+### Grupos
+
+Selecciona varios nodos y pulsa **Ctrl+Shift+G** para agruparlos con un marco y un título. Agrupa el flujo de esta sesión en tres bloques: previsión, ventilación y API. Un grupo también puede tener sus propias variables de entorno.
 
 ### `catch`, `status` y `complete`
 
@@ -344,7 +369,7 @@ Regla práctica: lo que cambia entre instalaciones (hosts, coordenadas, identifi
 - Con `INVERNADERO_LAT=999`, el fallo sale por la rama del código de estado; con un dominio inexistente, por el `catch`. En ambos casos la decisión se sigue tomando.
 - El script Python obtiene el estado y muestra la decisión.
 
-**Criterios de calidad:** coordenadas en variables de entorno, ningún camino de `http in` sin `http response`, ámbito del `catch` acotado y nodos con nombre.
+**Criterios de calidad:** coordenadas en variables de entorno, ningún camino de `http in` sin `http response`, ámbito del `catch` acotado, nodos con nombre y flujo organizado en grupos.
 
 ### Evidencias que debes guardar
 

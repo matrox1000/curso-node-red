@@ -50,7 +50,7 @@ Los ESP32 ya publican sus datos. Todo el trabajo se hace en Node-RED.
 
 ## Entorno de trabajo
 
-Node-RED se ejecuta en tu PC con **docker-compose**. El entorno se entrega en la sesión 1 y crece hasta la sesión 7. No hay que instalar Node-RED en local.
+Node-RED se ejecuta en tu PC con **docker-compose**. El entorno se entrega en la sesión 1 y crece hasta la sesión 7. En la sesión 1 instalarás además Node-RED de forma nativa, para entender cómo funciona por dentro; a partir de ahí se trabaja siempre con Docker.
 
 | Servicio | Función | Se usa desde |
 |----------|---------|--------------|
@@ -99,7 +99,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 
 **Objetivos**
 
-- Levantar el entorno con `docker compose up` y acceder al editor de Node-RED.
+- Instalar Node-RED de forma nativa con npm y levantar después el entorno del curso con `docker compose up`.
 - Explicar el modelo de programación basada en flujos y la estructura del objeto `msg`.
 - Construir flujos con los nodos core `inject`, `debug`, `function`, `change` y `switch`.
 - Programar lógica de control sobre lecturas de sensores, simuladas o del invernadero.
@@ -107,12 +107,13 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 **Contenidos**
 
 - Qué es Node-RED y dónde encaja en la integración IT/OT y el *edge computing*.
+- Instalación nativa: Node.js, npm, el comando `node-red` y su directorio de usuario. Paso al entorno Docker del curso.
 - Editor, paleta, *deploy* y pestañas.
 - El mensaje `msg`: `payload`, `topic` y propiedades propias.
 - Transformación de datos con `change` y `function`, y enrutado con `switch`.
 - Primera fuente de datos real: un `mqtt in` que recibe un sensor del invernadero, lo mismo que hacía tu script Python. En la sesión 3 se profundiza en MQTT.
 
-**Node-RED como plataforma:** contexto de nodo, de flujo y global; `link in`/`link out`; organización con grupos y comentarios; importar y exportar flujos.
+**Node-RED como plataforma:** ficheros de una instalación (`settings.js`, `flows.json`, credenciales, paleta); contexto de nodo, de flujo y global; organización con nombres y comentarios; importar y exportar flujos.
 
 **Entregable:** flujo que clasifica las lecturas de humedad del suelo y temperatura como `normal`, `aviso` o `crítico` según umbrales configurables y decide si "regar" o "ventilar".
 
@@ -132,7 +133,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 - Consulta periódica con `inject`, parsing y extracción de los campos útiles.
 - Endpoint propio, por ejemplo `GET /api/invernadero/estado`, consultable desde tus programas Python o el navegador.
 
-**Node-RED como plataforma:** gestión de errores con `catch`, `status` y `complete`; variables de entorno para URLs y parámetros.
+**Node-RED como plataforma:** gestión de errores con `catch`, `status` y `complete`; variables de entorno para URLs y parámetros; `link in`/`link out` y grupos.
 
 **Entregable:** flujo que consulta la previsión meteorológica y la combina con los datos del invernadero, por ejemplo para ventilar solo si fuera hace más fresco que dentro. Además, un endpoint REST que devuelve el estado actual.
 

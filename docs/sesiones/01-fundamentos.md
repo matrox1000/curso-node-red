@@ -7,7 +7,7 @@ outline: [2, 3]
 
 ## Objetivos de la sesión
 
-- Levantar el entorno del curso con `docker compose up` y acceder al editor de Node-RED.
+- Instalar Node-RED de forma nativa con npm, identificar los ficheros de su directorio de usuario y levantar después el entorno del curso con Docker.
 - Explicar la programación basada en flujos y la estructura del objeto `msg`.
 - Construir flujos con los nodos `inject`, `debug`, `change`, `switch` y `function`.
 - Recibir por MQTT una magnitud del invernadero (real o simulada) y convertirla a un valor numérico.
@@ -71,7 +71,87 @@ Los mensajes no se acuerdan de nada. Para guardar estado entre mensajes (el últ
 
 ## Práctica guiada paso a paso
 
-### Paso 0 · Preparar el entorno (20 min)
+### Paso 1 · Instalar Node-RED en tu PC (40 min)
+
+Antes de usar el entorno del curso vas a instalar Node-RED a mano. Así verás qué es realmente, una aplicación de Node.js, y dónde guarda tu trabajo.
+
+1. **Instala Node.js** en su versión LTS. Node-RED 4 necesita Node.js 18 o superior.
+
+   ::: code-group
+
+   ```powershell [Windows]
+   winget install OpenJS.NodeJS.LTS
+   # o descarga el instalador LTS de https://nodejs.org
+   ```
+
+   ```bash [macOS]
+   brew install node
+   ```
+
+   ```bash [Linux (Debian/Ubuntu)]
+   curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   ```
+
+   :::
+
+   Abre una terminal **nueva** y comprueba las versiones con `node -v` y `npm -v`.
+
+2. **Instala Node-RED** como paquete global de npm:
+
+   ::: code-group
+
+   ```powershell [Windows]
+   npm install -g --unsafe-perm node-red
+   ```
+
+   ```bash [macOS / Linux]
+   sudo npm install -g --unsafe-perm node-red
+   ```
+
+   :::
+
+3. **Arráncalo** con `node-red` y lee las primeras líneas del log. Localiza las versiones de Node-RED y de Node.js, el **User directory**, el **Settings file**, el **Flows file** y la línea `Server now running at http://127.0.0.1:1880/`.
+
+4. **Primer flujo.** Abre [http://localhost:1880](http://localhost:1880), arrastra un `inject` y un `debug` al lienzo, únelos y pulsa **Deploy** (arriba a la derecha). Pulsa el botón del `inject` y abre la pestaña de depuración (icono del insecto): aparece un *timestamp*. Nada se ejecuta hasta que despliegas; cada cambio en el editor requiere un nuevo **Deploy**.
+
+5. **Instala un nodo de la paleta.** En **Menú → Manage palette → Install**, busca `node-red-node-random` e instálalo. Aparece el nodo `random` en la paleta: pruébalo con `inject` → `random` → `debug`.
+
+6. **Explora el directorio de usuario** desde otra terminal, sin parar Node-RED:
+
+   ::: code-group
+
+   ```powershell [Windows]
+   dir $HOME\.node-red
+   type $HOME\.node-red\package.json
+   ```
+
+   ```bash [macOS / Linux]
+   ls -la ~/.node-red
+   cat ~/.node-red/package.json
+   ```
+
+   :::
+
+   `package.json` lista `node-red-node-random`: lo que instalas desde la paleta se guarda en tu directorio de usuario, no junto a Node-RED. En el apartado [Node-RED como plataforma](#node-red-como-plataforma) tienes qué es cada fichero.
+
+7. **Comprueba que el trabajo persiste.** Para Node-RED con **Ctrl+C** y vuelve a arrancarlo: el flujo sigue ahí. Abre `flows.json` con un editor de texto: es el mismo JSON que obtienes al exportar un flujo.
+
+8. **Para Node-RED** (**Ctrl+C**) antes de seguir. Si quieres conservar el flujo, expórtalo antes con **Ctrl+E**.
+
+::: warning Puerto 1880 ocupado
+El Node-RED nativo y el de Docker usan el mismo puerto. Si en el paso 2 `docker compose up` falla con *port is already allocated*, o el editor que abres no es el que esperas, es que el nativo sigue en marcha.
+:::
+
+::: tip Sin permisos de administrador
+Si no puedes instalar paquetes globales, ejecuta Node-RED sin instalarlo con `npx node-red`.
+:::
+
+### Paso 2 · Pasar al entorno del curso con Docker (20 min)
+
+Una instalación nativa sirve para un Node-RED. El sistema del invernadero necesita además un broker, una base de datos y el simulador, con las mismas versiones en todos los PCs. Docker Compose levanta todo eso igual en cada máquina con un solo comando.
+
+![Comparación: en la instalación nativa Node-RED corre sobre el Node.js de tu sistema y guarda sus ficheros en ~/.node-red; en Docker, Node.js y Node-RED vienen en la imagen del contenedor y los ficheros van al volumen node-red-data, montado en /data](./img/s01-nativo-vs-docker.svg)
 
 1. Descarga la carpeta `docker/` del repositorio del curso y abre una terminal en ella.
 2. Crea tu fichero de configuración:
@@ -105,7 +185,13 @@ Los mensajes no se acuerdan de nada. Para guardar estado entre mensajes (el últ
    docker compose ps
    ```
 
-5. Abre el editor en [http://localhost:1880](http://localhost:1880).
+5. Abre el editor en [http://localhost:1880](http://localhost:1880). Está vacío: es otra instalación, con su propio directorio de usuario. Compruébalo:
+
+   ```bash
+   docker compose exec node-red ls -la /data
+   ```
+
+   Si exportaste el flujo del paso 1, impórtalo aquí con **Ctrl+I**.
 
 ::: warning En el laboratorio
 Tu PC tiene que estar conectado a la **Wi-Fi del router del invernadero**, no a la red de la universidad. Si no, Node-RED no alcanza la Raspberry Pi.
@@ -115,21 +201,13 @@ Tu PC tiene que estar conectado a la **Wi-Fi del router del invernadero**, no a 
 El simulador publica los mismos topics que el invernadero real. `SIM_VELOCIDAD=60` hace que un minuto real equivalga a una hora simulada: verás secarse el suelo en pocos minutos. Mira qué publica con `docker compose logs -f simulador`.
 :::
 
-### Paso 1 · Primer flujo: `inject` → `debug` (10 min)
+### Paso 3 · Anatomía de `msg` (15 min)
 
-1. Arrastra un `inject` y un `debug` al lienzo y únelos.
-2. Pulsa **Deploy** (arriba a la derecha).
-3. Pulsa el botón del `inject` y abre la pestaña de depuración (icono del insecto): aparece un *timestamp*.
-
-Nada se ejecuta hasta que despliegas. Cada cambio en el editor requiere un nuevo **Deploy**.
-
-### Paso 2 · Anatomía de `msg` (15 min)
-
-1. En el `inject`, cambia `msg.payload` a tipo *string* con valor `42.5` y `msg.topic` a `invernadero/suelo/humedad`.
+1. Ya en el Node-RED de Docker, crea un `inject` → `debug` (o usa el que importaste). En el `inject`, cambia `msg.payload` a tipo *string* con valor `42.5` y `msg.topic` a `invernadero/suelo/humedad`.
 2. En el `debug`, cambia *Output* a **complete msg object**. Despliega y pulsa: verás `payload`, `topic` y `_msgid`.
 3. Inserta un `change` entre ambos con la regla *Set* `msg.unidad` = `%`. Comprueba que el mensaje llega con la nueva propiedad.
 
-### Paso 3 · Conectar con el invernadero: `mqtt in` (30 min)
+### Paso 4 · Conectar con el invernadero: `mqtt in` (30 min)
 
 1. Arrastra un `mqtt in`. En **Server**, pulsa el lápiz para crear el nodo de configuración del broker:
 
@@ -167,7 +245,7 @@ Topics disponibles (todos con payload numérico en texto):
 Al suscribirte recibes enseguida el último valor, aunque el sensor no haya publicado todavía.
 :::
 
-### Paso 4 · De texto a número con `change` (15 min)
+### Paso 5 · De texto a número con `change` (15 min)
 
 Los ESP32 publican **texto**: `"42.5"`, no `42.5`. Compararlo con un umbral numérico sin convertirlo es una fuente clásica de errores.
 
@@ -175,11 +253,11 @@ Los ESP32 publican **texto**: `"42.5"`, no `42.5`. Compararlo con un umbral num�
 2. Regla: *Set* `msg.payload` a la expresión (tipo **J:** JSONata) `$number(payload)`.
 3. Con el `debug` comprueba que el valor aparece ahora en azul (número) y no entre comillas (texto).
 
-### Paso 5 · Probar sin sensores (10 min)
+### Paso 6 · Probar sin sensores (10 min)
 
 Para probar la lógica con valores concretos, sin depender de lo que marque el sensor en ese momento, añade tres `inject` con payload *string* `20.0`, `30.0` y `50.0` y conéctalos a la entrada del `change`. Son tus **casos de prueba**: los usarás en los pasos siguientes y en el entregable.
 
-### Paso 6 · Umbrales en el contexto de flujo (20 min)
+### Paso 7 · Umbrales en el contexto de flujo (20 min)
 
 Los umbrales no deben estar escritos a fuego dentro de los nodos: se cargan una vez en el contexto de flujo y todos los nodos los leen de ahí.
 
@@ -192,7 +270,7 @@ Los umbrales no deben estar escritos a fuego dentro de los nodos: se cargan una 
 2. Conéctalo a un `change` con la regla *Set* `flow.umbrales` = `msg.payload`.
 3. Despliega y abre la pestaña **Context Data** de la barra lateral. Pulsa refrescar en *Flow* y comprueba que `umbrales` está guardado.
 
-### Paso 7 · Clasificar con `switch` (20 min)
+### Paso 8 · Clasificar con `switch` (20 min)
 
 Los dos umbrales dividen el rango de humedad en tres bandas. Así se clasificaría un día sin riego:
 
@@ -211,7 +289,7 @@ Los dos umbrales dividen el rango de humedad en tres bandas. Así se clasificar�
 2. En cada salida, un `change` que asigne `msg.estado` = `crítico`, `aviso` o `normal`.
 3. Prueba con los tres `inject` y comprueba que cada valor sale por la salida esperada.
 
-### Paso 8 · Decidir con `function` (25 min)
+### Paso 9 · Decidir con `function` (25 min)
 
 Une las tres salidas en un `function` llamado `decidir riego`:
 
@@ -246,22 +324,21 @@ Conecta la salida a un `debug` y prueba con los `inject` y con los datos reales.
 
 Si te atascas, puedes descargar el flujo de referencia de la práctica guiada: [s1-control-riego.json](../flows/s1-control-riego.json){download}. Impórtalo con **Menú → Import**, abre el nodo `Broker invernadero` y escribe el usuario y la contraseña: las credenciales nunca se exportan.
 
-### Paso 9 · Ver reaccionar al invernadero (solo en casa, 10 min)
-
-Con el simulador puedes encender la bomba de riego (Shelly `shellyplug-s-SIM001`) y ver cómo sube la humedad del suelo y cambia la decisión:
-
-```bash
-docker compose exec mosquitto mosquitto_pub -u alumno -P alumno \
-  -t invernadero/shelly/shellyplug-s-SIM001/relay/0/command -m on
-```
-
-Cambia `on` por `off` para apagarla. Si has cambiado `MQTT_ALUMNO_PASS`, usa tu contraseña.
-
-::: danger No actúes sobre el invernadero real en esta sesión
-En el laboratorio los Shelly son compartidos y controlan equipos reales. El envío de comandos se trabaja en la sesión 3.
-:::
-
 ## Node-RED como plataforma
+
+### Dentro de una instalación de Node-RED
+
+Todo lo que distingue a tu Node-RED de otro está en su **directorio de usuario**: `~/.node-red` en la instalación nativa y `/data` en el contenedor.
+
+| Fichero | Contenido |
+|---------|-----------|
+| `settings.js` | Configuración del runtime: puerto, seguridad del editor, almacenamiento del contexto… |
+| `flows.json` | Tus flujos: lo que guardas al pulsar **Deploy** |
+| `flows_cred.json` | Las credenciales de los nodos (contraseñas, tokens), cifradas y separadas de los flujos |
+| `package.json` y `node_modules/` | Los nodos instalados desde la paleta |
+| `.config.*.json` | Estado interno del editor; no lo toques |
+
+Hacer copia de seguridad de un Node-RED es copiar ese directorio. En la sesión 6 editarás `settings.js` para proteger el editor y cifrar las credenciales.
 
 ### Contexto: dónde vive el estado
 
@@ -269,17 +346,10 @@ En el laboratorio los Shelly son compartidos y controlan equipos reales. El env�
 - Por defecto el contexto está **en memoria**: se pierde al reiniciar Node-RED. Por eso los umbrales se cargan con un `inject` *once*.
 - Usa `flow` para lo que comparten los nodos de una pestaña y `global` solo para lo que necesiten varias pestañas.
 
-### `link in` / `link out`: cables invisibles
-
-Cuando un flujo crece, los cables largos lo hacen ilegible. Un `link out` envía el mensaje a uno o varios `link in`, incluso en otra pestaña.
-
-**Ejercicio:** conecta la salida de `decidir riego` a un `link out` y crea en otra zona del lienzo un `link in` → `debug`. En la sesión 3 usarás este patrón para separar la "lógica" de las "salidas".
-
 ### Organizar el flujo
 
 - **Nombres**: cada nodo con un nombre que diga qué hace (`texto → número`, no `change`).
 - **Comentarios**: nodos `comment` como títulos de sección. Su pestaña *info* admite Markdown.
-- **Grupos**: selecciona varios nodos y pulsa **Ctrl+Shift+G** para agruparlos con un marco y un título.
 
 ### Importar y exportar
 
@@ -320,21 +390,24 @@ Amplía el flujo de la práctica guiada para que controle también la **temperat
 - Con datos reales o simulados, la decisión se actualiza al llegar cada lectura.
 - Cambiar un umbral en el `inject` y volver a pulsarlo cambia el comportamiento sin tocar ningún otro nodo.
 
-**Criterios de calidad:** umbrales solo en el contexto (ningún número "mágico" dentro de `switch` o `function`), nodos con nombre y flujo organizado con comentarios o grupos.
+**Criterios de calidad:** umbrales solo en el contexto (ningún número "mágico" dentro de `switch` o `function`), nodos con nombre y flujo organizado con comentarios.
 
 ### Evidencias que debes guardar
 
+- [ ] Captura de la terminal con Node-RED nativo arrancado (versiones y *User directory*) y del listado de tu `~/.node-red`.
 - [ ] Captura del flujo completo.
 - [ ] Captura de la depuración con al menos un caso de cada estado para cada magnitud.
 - [ ] Captura de **Context Data** con los umbrales y los últimos valores guardados.
 - [ ] Flujo exportado: `s1-<tu-apellido>.json`.
 - [ ] En el informe, respuesta breve a:
+  - ¿Dónde se guardan tus flujos en la instalación nativa y en Docker? ¿Qué ganas usando Docker?
   - ¿Qué ventajas e inconvenientes ves frente a tu script Python de la práctica anterior?
   - ¿Por qué hay que convertir el payload a número y qué pasaría si no lo hicieras?
   - ¿Por qué el `switch` debe detenerse en la primera coincidencia?
 
 ## Recursos adicionales
 
+- [Node-RED — Running Node-RED locally](https://nodered.org/docs/getting-started/local)
 - [Node-RED — Getting started with Docker](https://nodered.org/docs/getting-started/docker)
 - [Node-RED — Using environment variables](https://nodered.org/docs/user-guide/environment-variables)
 - [Node-RED Cookbook](https://cookbook.nodered.org/)

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 350" role="img" aria-labelledby="t d">
+  <title id="t">Instalación nativa frente a Docker</title>
+  <desc id="d">En la instalación nativa, Node-RED se instala con npm sobre Node.js en tu sistema operativo y guarda sus ficheros en la carpeta ~/.node-red. En Docker, Node.js y Node-RED vienen dentro de la imagen del contenedor y los ficheros se guardan en el volumen node-red-data, montado en /data. En ambos casos los ficheros son los mismos: settings.js, flows.json, flows_cred.json, package.json y node_modules.</desc>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .marco { font-size: 15px; font-weight: 700; }
+    .titulo { font-size: 13px; font-weight: 600; }
+    .sub { font-size: 12px; fill: #475569; }
+    .codigo { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #1e293b; }
+    .codigo-t { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13px; font-weight: 700; fill: #115e59; }
+  </style>
+
+  <rect class="superficie" x="0.5" y="0.5" width="899" height="349" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+
+  <!-- ===== Nativa ===== -->
+  <rect x="20" y="20" width="410" height="290" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="40" y="46" class="marco">Instalación nativa (sesión 1)</text>
+  <text x="40" y="66" class="codigo">$ node-red</text>
+
+  <rect x="40" y="104" width="220" height="40" rx="8" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="150" y="129" text-anchor="middle" class="titulo">Node-RED</text>
+  <rect x="40" y="152" width="220" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="150" y="177" text-anchor="middle" class="titulo">Node.js · node, npm</text>
+  <text x="40" y="226" class="codigo">$ npm install -g node-red</text>
+  <rect x="40" y="250" width="220" height="40" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="150" y="275" text-anchor="middle" class="titulo">Tu sistema operativo</text>
+
+  <rect x="275" y="80" width="145" height="210" rx="10" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.5"/>
+  <text x="347" y="104" text-anchor="middle" class="codigo-t">~/.node-red</text>
+  <text x="289" y="136" class="codigo">settings.js</text>
+  <text x="289" y="160" class="codigo">flows.json</text>
+  <text x="289" y="184" class="codigo">flows_cred.json</text>
+  <text x="289" y="208" class="codigo">package.json</text>
+  <text x="289" y="232" class="codigo">node_modules/</text>
+  <text x="289" y="252" class="sub">(nodos de la paleta)</text>
+
+  <!-- ===== Docker ===== -->
+  <rect x="470" y="20" width="410" height="290" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="490" y="46" class="marco">Docker (resto del curso)</text>
+  <text x="490" y="66" class="codigo">$ docker compose up -d</text>
+
+  <rect x="490" y="80" width="215" height="160" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="1.5"/>
+  <text x="505" y="99" class="sub">contenedor node-red</text>
+  <rect x="505" y="108" width="185" height="36" rx="8" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="597" y="131" text-anchor="middle" class="titulo">Node-RED + Dashboard 2.0</text>
+  <rect x="505" y="150" width="185" height="36" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="597" y="173" text-anchor="middle" class="titulo">Node.js</text>
+  <text x="597" y="210" text-anchor="middle" class="sub">imagen nodered/node-red:4.1</text>
+  <text x="597" y="227" text-anchor="middle" class="sub">+ docker/node-red/Dockerfile</text>
+  <rect x="490" y="250" width="215" height="40" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="597" y="275" text-anchor="middle" class="titulo">Tu sistema operativo + Docker</text>
+
+  <rect x="720" y="80" width="150" height="210" rx="10" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.5"/>
+  <text x="795" y="100" text-anchor="middle" class="sub">volumen node-red-data</text>
+  <text x="795" y="118" text-anchor="middle" class="codigo-t">/data</text>
+  <text x="734" y="146" class="codigo">settings.js</text>
+  <text x="734" y="170" class="codigo">flows.json</text>
+  <text x="734" y="194" class="codigo">flows_cred.json</text>
+  <text x="734" y="218" class="codigo">package.json</text>
+  <text x="734" y="242" class="codigo">node_modules/</text>
+  <text x="734" y="262" class="sub">(nodos de la paleta)</text>
+
+  <text x="450" y="334" text-anchor="middle" class="sub">Mismos ficheros en los dos casos: ~/.node-red en tu PC ↔ /data dentro del contenedor</text>
+</svg>
