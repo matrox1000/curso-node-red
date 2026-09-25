@@ -106,6 +106,40 @@ package.json           # dependencia `vitepress`
 - Usa contenedores VitePress donde aporten (`::: tip` para atajos, `::: warning` para errores comunes de Node-RED/MQTT, `::: code-group` para mostrar el mismo paso contra el invernadero real vs. el simulador). Ver `references/core-markdown.md` y `references/features-code-blocks.md` de la skill vitepress.
 - El sitio no debe tener enlaces rotos (`vitepress build` falla con ellos): no enlazar páginas que aún no existen.
 
+### Imágenes, diagramas y gráficos
+
+**Usa o genera imágenes siempre que sean la mejor forma de explicar algo.** No es decoración: si un concepto se entiende antes viéndolo que leyéndolo, la página debe incluir la imagen. Antes de dar por terminada una página, repasa cada sección y pregúntate: "¿esto se entendería mejor con un dibujo?".
+
+Casos en los que la imagen es casi siempre mejor que el texto:
+
+| Qué explicar | Tipo de imagen |
+|--------------|----------------|
+| Arquitectura del sistema, qué pieza se añade en la sesión, red del invernadero | Diagrama de bloques (SVG) |
+| Recorrido de un mensaje: sensor → broker → Node-RED → salida; publicación/suscripción; bridges de la RPi | Diagrama de flujo o de secuencia (SVG) |
+| Estructura de un flujo de Node-RED que el alumno tiene que construir | Captura del editor (PNG) o esquema de nodos (SVG) |
+| Dónde está una opción en el editor (Deploy, Context Data, pestaña Security…) | Captura del editor recortada y señalada (PNG) |
+| Resultado esperado del entregable (panel, salida de debug, mensaje de Telegram) | Captura del resultado (PNG) |
+| Comportamiento de los datos: umbrales, histéresis, antirrebote, ciclo diario, tendencia | Gráfica (SVG) con los datos del invernadero o del simulador |
+| Estados y transiciones: alarma activa/reconocida/cerrada, watchdog | Diagrama de estados (SVG) |
+
+Reglas:
+
+- **Formato.** Diagramas y gráficas en **SVG** escrito a mano o generado por script, que es ligero, nítido y se puede versionar. Capturas en **PNG**. No uses arte ASCII para diagramas que sean clave para entender la sesión: pásalo a SVG. El ASCII solo vale como apoyo rápido dentro de un bloque de código.
+- **Ubicación y enlaces.** Guarda las imágenes junto a la página, en `docs/<sección>/img/sNN-<descripcion>.svg|png` (p. ej. `docs/sesiones/img/s03-bridges-rpi.svg`), y enlázalas con una ruta relativa: `![texto alternativo](./img/s03-bridges-rpi.svg)`. Vite las procesa y respeta la `base` de GitHub Pages.
+- **Tema claro y oscuro.** El sitio tiene los dos temas. Cada SVG debe leerse bien en ambos: cajas con relleno propio y texto oscuro sobre relleno claro (el contraste lo da la caja, no el fondo de la página), y trazos y flechas en tonos medios. Evita el negro o el blanco puro sobre fondo transparente.
+- **Accesibilidad.** Texto alternativo descriptivo siempre. Si la imagen transmite información que no está en el texto, añade debajo una frase que la resuma.
+- **Coherencia visual.** Mismos colores para los mismos elementos en todo el curso: ESP32/sensores, RPi/broker, Node-RED, servicios externos, actuadores. Nombres, topics y valores deben coincidir con los reales (`references/invernadero-mqtt.md`).
+- **Gráficas de datos.** Antes de dibujar una gráfica, consulta la skill **`dataviz`**. Usa datos plausibles del invernadero o generados con el simulador, con ejes y unidades rotulados.
+- **Capturas del editor.** Si hay un Node-RED en marcha, genera las capturas reales (p. ej. con la skill `claude-in-chrome`). Si no se pueden generar en ese momento, deja un marcador visible y avísalo al usuario:
+
+  ```md
+  ::: info Captura pendiente
+  Editor con el flujo del paso 7: switch `clasificar` con sus tres salidas.
+  :::
+  ```
+
+- **Proporción.** Cada imagen debe responder a una necesidad concreta de explicación. No pongas imágenes genéricas ni de relleno.
+
 Plantilla obligatoria para la página de cada sesión (`docs/sesiones/0N-slug.md`), con frontmatter mínimo `title` y `outline`:
 
 1. **Objetivos de la sesión** (3-5 bullets, verbos en infinitivo, medibles)
