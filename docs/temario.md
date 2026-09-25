@@ -123,7 +123,7 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 
 **Entregable:** flujo que clasifica las lecturas de humedad del suelo y temperatura como `normal`, `aviso` o `crítico` según umbrales configurables y decide si "regar" o "ventilar".
 
-### Sesión 2 — Integración con APIs externas
+### [Sesión 2 — Integración con APIs externas](/sesiones/02-apis-externas)
 
 **Objetivos**
 
@@ -135,13 +135,13 @@ Cada sesión incluye además un bloque breve de **Node-RED como plataforma**: fu
 **Contenidos**
 
 - Anatomía de una llamada REST: método, URL, parámetros, cabeceras y códigos de estado.
-- API meteorológica sin clave (por ejemplo, [Open-Meteo](https://open-meteo.com/)): temperatura exterior, precipitación prevista y evapotranspiración.
+- API meteorológica sin clave (por ejemplo, [Open-Meteo](https://open-meteo.com/)): temperatura exterior, humedad exterior y evapotranspiración.
 - Consulta periódica con `inject`, parsing y extracción de los campos útiles.
 - Endpoint propio, por ejemplo `GET /api/invernadero/estado`, consultable desde tus programas Python o el navegador.
 
 **Node-RED como plataforma:** gestión de errores con `catch`, `status` y `complete`; variables de entorno para URLs y parámetros.
 
-**Entregable:** flujo que consulta la previsión meteorológica y la combina con los datos del invernadero, por ejemplo para no regar si se espera lluvia. Además, un endpoint REST que devuelve el estado actual.
+**Entregable:** flujo que consulta la previsión meteorológica y la combina con los datos del invernadero, por ejemplo para ventilar solo si fuera hace más fresco que dentro. Además, un endpoint REST que devuelve el estado actual.
 
 ### Sesión 3 — MQTT e IoT en la red del invernadero
 

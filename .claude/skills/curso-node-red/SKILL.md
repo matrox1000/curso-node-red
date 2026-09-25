@@ -128,7 +128,20 @@ Reglas:
 - **Ubicación y enlaces.** Guarda las imágenes junto a la página, en `docs/<sección>/img/sNN-<descripcion>.svg|png` (p. ej. `docs/sesiones/img/s03-bridges-rpi.svg`), y enlázalas con una ruta relativa: `![texto alternativo](./img/s03-bridges-rpi.svg)`. Vite las procesa y respeta la `base` de GitHub Pages.
 - **Tema claro y oscuro.** El sitio tiene los dos temas. Cada SVG debe leerse bien en ambos: cajas con relleno propio y texto oscuro sobre relleno claro (el contraste lo da la caja, no el fondo de la página), y trazos y flechas en tonos medios. Evita el negro o el blanco puro sobre fondo transparente.
 - **Accesibilidad.** Texto alternativo descriptivo siempre. Si la imagen transmite información que no está en el texto, añade debajo una frase que la resuma.
-- **Coherencia visual.** Mismos colores para los mismos elementos en todo el curso: ESP32/sensores, RPi/broker, Node-RED, servicios externos, actuadores. Nombres, topics y valores deben coincidir con los reales (`references/invernadero-mqtt.md`).
+- **Coherencia visual.** Mismos colores para los mismos elementos en todo el curso. Nombres, topics y valores deben coincidir con los reales (`references/invernadero-mqtt.md`). Paleta (relleno / borde); referencia: `docs/sesiones/img/s02-arquitectura.svg`:
+
+  | Elemento | Relleno | Borde |
+  |----------|---------|-------|
+  | ESP32 / sensores | `#dcfce7` | `#16a34a` |
+  | RPi / broker MQTT | `#ede9fe` | `#7c3aed` |
+  | Node-RED (contenedor) | `#fff1f2` | `#e11d48` (título `#9f1239`) |
+  | Nodo dentro de Node-RED | `#ffffff` | `#cbd5e1` |
+  | Contexto (flow/global), trazo discontinuo | `#fefce8` | `#ca8a04` |
+  | Servicios externos (APIs, Telegram, LLM) | `#dbeafe` | `#2563eb` |
+  | Actuadores (Shelly) | `#fef3c7` | `#d97706` |
+  | Clientes / usuario | `#f1f5f9` | `#64748b` |
+
+  Texto `#1e293b` (secundario `#475569`), cables y etiquetas de flecha `#64748b`, tipografía `system-ui`. Incluye `<title>` y `<desc>` en cada SVG.
 - **Gráficas de datos.** Antes de dibujar una gráfica, consulta la skill **`dataviz`**. Usa datos plausibles del invernadero o generados con el simulador, con ejes y unidades rotulados.
 - **Capturas del editor.** Si hay un Node-RED en marcha, genera las capturas reales (p. ej. con la skill `claude-in-chrome`). Si no se pueden generar en ese momento, deja un marcador visible y avísalo al usuario:
 

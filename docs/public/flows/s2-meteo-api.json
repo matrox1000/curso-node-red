@@ -1,0 +1,510 @@
+[
+  {
+    "id": "b2c3d4e5f6a70001",
+    "type": "tab",
+    "label": "S2 · Meteorología y API",
+    "disabled": false,
+    "info": "Sesión 2: consulta periódica a Open-Meteo, decisión de ventilación con la temperatura exterior y endpoint REST propio."
+  },
+  {
+    "id": "b2c3d4e5f6a70002",
+    "type": "comment",
+    "z": "b2c3d4e5f6a70001",
+    "name": "0 · Umbrales de ventilación",
+    "info": "Contexto de flujo de esta pestaña.",
+    "x": 160,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70003",
+    "type": "inject",
+    "z": "b2c3d4e5f6a70001",
+    "name": "cargar umbrales",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"temperatura\":{\"aviso\":30},\"margenExterior\":2}",
+    "payloadType": "json",
+    "x": 160,
+    "y": 80,
+    "wires": [
+      [
+        "b2c3d4e5f6a70004"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70004",
+    "type": "change",
+    "z": "b2c3d4e5f6a70001",
+    "name": "flow.umbrales = payload",
+    "rules": [
+      {
+        "t": "set",
+        "p": "umbrales",
+        "pt": "flow",
+        "to": "payload",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 390,
+    "y": 80,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70005",
+    "type": "comment",
+    "z": "b2c3d4e5f6a70001",
+    "name": "1 · Previsión meteorológica (Open-Meteo)",
+    "info": "Cada 15 min. La URL se construye con las variables de entorno INVERNADERO_LAT / INVERNADERO_LON.",
+    "x": 200,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70006",
+    "type": "inject",
+    "z": "b2c3d4e5f6a70001",
+    "name": "cada 15 min",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "900",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "2",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 180,
+    "wires": [
+      [
+        "b2c3d4e5f6a70007"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70007",
+    "type": "function",
+    "z": "b2c3d4e5f6a70001",
+    "name": "construir URL",
+    "func": "// Coordenadas del invernadero desde variables de entorno del contenedor\nconst lat = env.get(\"INVERNADERO_LAT\") || \"38.3852\";\nconst lon = env.get(\"INVERNADERO_LON\") || \"-0.5143\";\n\nmsg.url = \"https://api.open-meteo.com/v1/forecast\"\n    + `?latitude=${lat}&longitude=${lon}`\n    + \"&current=temperature_2m,relative_humidity_2m\"\n    + \"&hourly=precipitation_probability,precipitation,et0_fao_evapotranspiration\"\n    + \"&forecast_hours=6&timezone=Europe%2FMadrid\";\nmsg.requestTimeout = 10000;   // ms: sin respuesta en 10 s -> error\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 180,
+    "wires": [
+      [
+        "b2c3d4e5f6a70008"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70008",
+    "type": "http request",
+    "z": "b2c3d4e5f6a70001",
+    "name": "Open-Meteo",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 530,
+    "y": 180,
+    "wires": [
+      [
+        "b2c3d4e5f6a70009"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70009",
+    "type": "switch",
+    "z": "b2c3d4e5f6a70001",
+    "name": "¿200 OK?",
+    "property": "statusCode",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "200",
+        "vt": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "false",
+    "repair": false,
+    "outputs": 2,
+    "x": 700,
+    "y": 180,
+    "wires": [
+      [
+        "b2c3d4e5f6a70010"
+      ],
+      [
+        "b2c3d4e5f6a70012"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70010",
+    "type": "function",
+    "z": "b2c3d4e5f6a70001",
+    "name": "extraer previsión",
+    "func": "// Resume la respuesta en los campos que usa el sistema\nconst c = msg.payload.current;\nconst h = msg.payload.hourly;\nconst suma = a => a.reduce((s, x) => s + (x ?? 0), 0);\n\nconst meteo = {\n    tempExterior: c.temperature_2m,\n    humExterior: c.relative_humidity_2m,\n    lluvia6h: Math.round(suma(h.precipitation) * 10) / 10,\n    probLluviaMax: Math.max(...h.precipitation_probability),\n    et0_6h: Math.round(suma(h.et0_fao_evapotranspiration) * 100) / 100,\n    ts: Date.now()\n};\nglobal.set(\"meteo\", meteo);\n\nnode.status({ fill: \"green\", shape: \"dot\", text: `${meteo.tempExterior} ºC fuera` });\nmsg.payload = meteo;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 890,
+    "y": 160,
+    "wires": [
+      [
+        "b2c3d4e5f6a70011"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70011",
+    "type": "debug",
+    "z": "b2c3d4e5f6a70001",
+    "name": "previsión",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1080,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70012",
+    "type": "function",
+    "z": "b2c3d4e5f6a70001",
+    "name": "respuesta inesperada",
+    "func": "// La API ha respondido, pero no con 200 (p. ej. 400 por parámetros incorrectos)\nconst motivo = msg.payload && msg.payload.reason ? msg.payload.reason : \"sin detalle\";\nnode.status({ fill: \"red\", shape: \"ring\", text: `HTTP ${msg.statusCode}` });\nmsg.payload = { origen: \"Open-Meteo\", statusCode: msg.statusCode, motivo };\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 900,
+    "y": 220,
+    "wires": [
+      [
+        "b2c3d4e5f6a70015"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70013",
+    "type": "catch",
+    "z": "b2c3d4e5f6a70001",
+    "name": "errores de red / código",
+    "scope": [
+      "b2c3d4e5f6a70008",
+      "b2c3d4e5f6a70010"
+    ],
+    "uncaught": false,
+    "x": 190,
+    "y": 280,
+    "wires": [
+      [
+        "b2c3d4e5f6a70014"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70014",
+    "type": "function",
+    "z": "b2c3d4e5f6a70001",
+    "name": "registrar error",
+    "func": "// Sin conexión, timeout, JSON mal formado o fallo en \"extraer previsión\"\nnode.status({ fill: \"red\", shape: \"dot\", text: msg.error.message.slice(0, 40) });\nmsg.payload = { origen: msg.error.source.name, error: msg.error.message };\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 280,
+    "wires": [
+      [
+        "b2c3d4e5f6a70015"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70015",
+    "type": "debug",
+    "z": "b2c3d4e5f6a70001",
+    "name": "errores",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1080,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70016",
+    "type": "status",
+    "z": "b2c3d4e5f6a70001",
+    "name": "estado de la petición",
+    "scope": [
+      "b2c3d4e5f6a70008"
+    ],
+    "x": 200,
+    "y": 320,
+    "wires": [
+      [
+        "b2c3d4e5f6a70017"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70017",
+    "type": "debug",
+    "z": "b2c3d4e5f6a70001",
+    "name": "estado http",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "status",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 410,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70018",
+    "type": "comment",
+    "z": "b2c3d4e5f6a70001",
+    "name": "2 · Ventilación: ¿fuera hace más fresco?",
+    "info": "Ventilar solo enfría si la temperatura exterior es menor que la interior.",
+    "x": 200,
+    "y": 380,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70019",
+    "type": "mqtt in",
+    "z": "b2c3d4e5f6a70001",
+    "name": "temperatura interior",
+    "topic": "invernadero/dht22/temperatura",
+    "qos": "0",
+    "datatype": "utf8",
+    "broker": "a1b2c3d4e5f600b1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 170,
+    "y": 420,
+    "wires": [
+      [
+        "b2c3d4e5f6a70020"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70020",
+    "type": "change",
+    "z": "b2c3d4e5f6a70001",
+    "name": "texto → número",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "$number(payload)",
+        "tot": "jsonata"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 380,
+    "y": 420,
+    "wires": [
+      [
+        "b2c3d4e5f6a70021"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70021",
+    "type": "function",
+    "z": "b2c3d4e5f6a70001",
+    "name": "decidir ventilación",
+    "func": "const interior = msg.payload;\nconst u = flow.get(\"umbrales\");\nlet meteo = global.get(\"meteo\");\n\n// Una previsión de hace más de 1 h no es fiable\nif (meteo && Date.now() - meteo.ts > 60 * 60 * 1000) meteo = null;\n\nlet ventilar = false;\nlet motivo;\nif (interior < u.temperatura.aviso) {\n    motivo = \"temperatura interior correcta\";\n} else if (!meteo) {\n    ventilar = true;\n    motivo = \"calor dentro; sin datos meteorológicos recientes\";\n} else if (meteo.tempExterior <= interior - u.margenExterior) {\n    ventilar = true;\n    motivo = `fuera hace ${meteo.tempExterior} ºC`;\n} else {\n    motivo = `ventilar no enfría: fuera hace ${meteo.tempExterior} ºC`;\n}\n\nmsg.payload = { interior, exterior: meteo ? meteo.tempExterior : null, ventilar, motivo };\nglobal.set(\"ventilacion\", msg.payload);\nnode.status({ fill: ventilar ? \"blue\" : \"grey\", shape: \"dot\", text: ventilar ? \"ventilar\" : \"no ventilar\" });\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 590,
+    "y": 420,
+    "wires": [
+      [
+        "b2c3d4e5f6a70022"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70022",
+    "type": "debug",
+    "z": "b2c3d4e5f6a70001",
+    "name": "decisión ventilación",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 810,
+    "y": 420,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70023",
+    "type": "comment",
+    "z": "b2c3d4e5f6a70001",
+    "name": "3 · API propia: GET /api/invernadero/estado",
+    "info": "Pruébalo en http://localhost:1880/api/invernadero/estado",
+    "x": 220,
+    "y": 480,
+    "wires": []
+  },
+  {
+    "id": "b2c3d4e5f6a70024",
+    "type": "http in",
+    "z": "b2c3d4e5f6a70001",
+    "name": "",
+    "url": "/api/invernadero/estado",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 200,
+    "y": 520,
+    "wires": [
+      [
+        "b2c3d4e5f6a70025"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70025",
+    "type": "function",
+    "z": "b2c3d4e5f6a70001",
+    "name": "componer estado",
+    "func": "const meteo = global.get(\"meteo\");\n\nmsg.payload = {\n    ts: new Date().toISOString(),\n    ventilacion: global.get(\"ventilacion\") ?? null,\n    meteo: meteo ?? null,\n    antiguedadMeteoMin: meteo ? Math.round((Date.now() - meteo.ts) / 60000) : null\n};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 450,
+    "y": 520,
+    "wires": [
+      [
+        "b2c3d4e5f6a70026"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6a70026",
+    "type": "http response",
+    "z": "b2c3d4e5f6a70001",
+    "name": "",
+    "statusCode": "",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "x": 650,
+    "y": 520,
+    "wires": []
+  },
+  {
+    "id": "a1b2c3d4e5f600b1",
+    "type": "mqtt-broker",
+    "name": "Broker invernadero",
+    "broker": "${MQTT_HOST}",
+    "port": "${MQTT_PORT}",
+    "clientid": "",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthRetain": "false",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closeRetain": "false",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willRetain": "false",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": ""
+  }
+]

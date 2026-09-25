@@ -21,6 +21,9 @@ services:
       TZ: ${TZ:-Europe/Madrid}
       MQTT_HOST: ${MQTT_HOST:-mosquitto}
       MQTT_PORT: ${MQTT_PORT:-1883}
+      # Coordenadas del invernadero para las APIs meteorológicas (sesión 2)
+      INVERNADERO_LAT: ${INVERNADERO_LAT:-38.3852}
+      INVERNADERO_LON: ${INVERNADERO_LON:--0.5143}
     volumes:
       - node-red-data:/data
 
