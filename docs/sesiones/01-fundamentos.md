@@ -17,9 +17,9 @@ outline: [2, 3]
 
 Esta sesión construye la **lógica de procesado**: la pieza que recibe una lectura, la interpreta y decide qué hacer. En las sesiones siguientes esa decisión se enriquecerá con la previsión meteorológica (S2), actuará sobre la bomba real (S3), se verá en el panel (S4), quedará registrada (S5) y generará alertas (S6).
 
-```text
-[sensor] ──▶ ■ lógica de control (S1) ──▶ decisión: regar / no regar
-```
+![Esquema del flujo de la sesión: la humedad del suelo llega por MQTT o por inject de prueba, se convierte a número, un switch la clasifica con los umbrales del contexto de flujo, cada salida etiqueta el estado y un function decide si regar](./img/s01-flujo-riego.svg)
+
+Este es el flujo que construirás en la práctica guiada. Los recuadros discontinuos son el **contexto de flujo**: los umbrales y el último estado se guardan ahí, no en los nodos.
 
 ## Conceptos clave
 
@@ -193,6 +193,10 @@ Los umbrales no deben estar escritos a fuego dentro de los nodos: se cargan una 
 3. Despliega y abre la pestaña **Context Data** de la barra lateral. Pulsa refrescar en *Flow* y comprueba que `umbrales` está guardado.
 
 ### Paso 7 · Clasificar con `switch` (20 min)
+
+Los dos umbrales dividen el rango de humedad en tres bandas. Así se clasificaría un día sin riego:
+
+![Humedad del suelo de un día sin riego: baja de 52 % a 18 %; pasa a aviso al cruzar 35 % a las 13:40 y a crítico al cruzar 25 % a las 16:20, momento en que el flujo decide regar](./img/s01-umbrales.svg)
 
 1. Añade un `switch` llamado `clasificar` sobre `msg.payload` con tres reglas:
 

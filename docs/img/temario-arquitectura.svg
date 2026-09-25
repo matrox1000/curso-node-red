@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="t d">
+  <title id="t">Arquitectura del sistema del invernadero por sesiones</title>
+  <desc id="d">Los ESP32 del invernadero publican por MQTT en sus brokers; la Raspberry Pi los reúne en un broker central. El Node-RED de cada alumno se conecta a la Raspberry Pi y, sesión a sesión, añade: lógica de control (S1), APIs externas como Open-Meteo (S2), integración MQTT y comandos a los Shelly (S3), panel de operador (S4), histórico en InfluxDB (S5), alarmas por Telegram (S6) y un asistente de IA (S7).</desc>
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .titulo { font-size: 14px; font-weight: 600; }
+    .sub { font-size: 12px; fill: #475569; }
+    .nodo { font-size: 13px; }
+    .ses { font-size: 12px; font-weight: 700; fill: #9f1239; }
+    .etiqueta { font-size: 11px; fill: #64748b; }
+    .cable { stroke: #64748b; stroke-width: 1.6; fill: none; }
+  </style>
+
+  <rect class="superficie" x="0.5" y="0.5" width="959" height="439" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+
+  <!-- Invernadero -->
+  <rect x="20" y="60" width="170" height="72" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="105" y="88" text-anchor="middle" class="titulo">ESP32 × 6</text>
+  <text x="105" y="108" text-anchor="middle" class="sub">TH · distancia · peso</text>
+  <text x="105" y="124" text-anchor="middle" class="sub">suelo · calidad del agua</text>
+
+  <rect x="20" y="300" width="170" height="72" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="105" y="330" text-anchor="middle" class="titulo">Shelly × 2</text>
+  <text x="105" y="350" text-anchor="middle" class="sub">bomba · ventilador</text>
+
+  <rect x="220" y="170" width="160" height="80" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="300" y="203" text-anchor="middle" class="titulo">Raspberry Pi</text>
+  <text x="300" y="224" text-anchor="middle" class="sub">Mosquitto central</text>
+
+  <path d="M190,96 H205 V195 H218" class="cable" marker-end="url(#flecha)"/>
+  <text x="196" y="150" class="etiqueta" transform="rotate(-90 199 150)" text-anchor="middle">MQTT</text>
+  <path d="M300,250 V336 H192" class="cable" marker-end="url(#flecha)"/>
+  <text x="248" y="328" text-anchor="middle" class="etiqueta">comandos</text>
+
+  <!-- Node-RED -->
+  <rect x="420" y="20" width="300" height="400" rx="14" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="436" y="44" class="titulo" style="fill:#9f1239">Node-RED · tu PC</text>
+
+  <g class="nodo">
+    <rect x="440" y="60" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="85" class="ses">S1</text><text x="484" y="85">Lógica de control</text>
+    <rect x="440" y="110" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="135" class="ses">S2</text><text x="484" y="135">APIs externas · API propia</text>
+    <rect x="440" y="160" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="185" class="ses">S3</text><text x="484" y="185">Integración MQTT · comandos</text>
+    <rect x="440" y="210" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="235" class="ses">S4</text><text x="484" y="235">Panel de operador</text>
+    <rect x="440" y="260" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="285" class="ses">S5</text><text x="484" y="285">Histórico</text>
+    <rect x="440" y="310" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="335" class="ses">S6</text><text x="484" y="335">Eventos y alarmas</text>
+    <rect x="440" y="360" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="456" y="385" class="ses">S7</text><text x="484" y="385">Asistente de IA</text>
+  </g>
+
+  <line x1="380" y1="185" x2="438" y2="185" class="cable" marker-start="url(#flecha)" marker-end="url(#flecha)"/>
+  <text x="399" y="177" text-anchor="middle" class="etiqueta">MQTT</text>
+
+  <!-- Servicios y usuarios -->
+  <rect x="770" y="110" width="170" height="40" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="855" y="135" text-anchor="middle" class="nodo">Open-Meteo</text>
+  <rect x="770" y="210" width="170" height="40" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="855" y="235" text-anchor="middle" class="nodo">Operador · navegador</text>
+  <rect x="770" y="260" width="170" height="40" rx="10" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.5"/>
+  <text x="855" y="285" text-anchor="middle" class="nodo">InfluxDB</text>
+  <rect x="770" y="310" width="170" height="40" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="855" y="335" text-anchor="middle" class="nodo">Telegram</text>
+  <rect x="770" y="360" width="170" height="40" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="855" y="385" text-anchor="middle" class="nodo">LLM (API)</text>
+
+  <line x1="700" y1="130" x2="768" y2="130" class="cable" marker-start="url(#flecha)" marker-end="url(#flecha)"/>
+  <text x="745" y="122" text-anchor="middle" class="etiqueta">HTTP</text>
+  <line x1="700" y1="230" x2="768" y2="230" class="cable" marker-start="url(#flecha)" marker-end="url(#flecha)"/>
+  <line x1="700" y1="280" x2="768" y2="280" class="cable" marker-start="url(#flecha)" marker-end="url(#flecha)"/>
+  <line x1="700" y1="330" x2="768" y2="330" class="cable" marker-end="url(#flecha)"/>
+  <line x1="700" y1="380" x2="768" y2="380" class="cable" marker-start="url(#flecha)" marker-end="url(#flecha)"/>
+</svg>

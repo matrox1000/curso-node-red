@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 330" role="img" aria-labelledby="t d">
+  <title id="t">Clasificación de la humedad del suelo por umbrales</title>
+  <desc id="d">Humedad del suelo de un día sin riego, de 52 % a las 08:00 a 18 % a las 18:00. Por encima de 35 % el estado es normal, entre 25 y 35 % es aviso y por debajo de 25 % es crítico, que es cuando el flujo decide regar. La lectura pasa a aviso a las 13:40 y a crítico a las 16:20.</desc>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .eje { font-size: 11px; fill: #52514e; font-variant-numeric: tabular-nums; }
+    .banda { font-size: 12px; }
+    .nota { font-size: 12px; font-weight: 600; }
+  </style>
+  <rect x="0.5" y="0.5" width="799" height="329" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+  <text x="64" y="24" class="eje">Humedad del suelo (%)</text>
+  <rect x="64" y="175.3" width="616" height="96.7" fill="#d03b3b" fill-opacity="0.1"/>
+  <rect x="64" y="136.7" width="616" height="38.7" fill="#fab219" fill-opacity="0.16"/>
+  <rect x="64" y="40.0" width="616" height="96.7" fill="#0ca30c" fill-opacity="0.08"/>
+  <line x1="64" y1="272.0" x2="680" y2="272.0" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="276.0" text-anchor="end" class="eje">0</text>
+  <line x1="64" y1="233.3" x2="680" y2="233.3" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="237.3" text-anchor="end" class="eje">10</text>
+  <line x1="64" y1="194.7" x2="680" y2="194.7" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="198.7" text-anchor="end" class="eje">20</text>
+  <line x1="64" y1="156.0" x2="680" y2="156.0" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="160.0" text-anchor="end" class="eje">30</text>
+  <line x1="64" y1="117.3" x2="680" y2="117.3" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="121.3" text-anchor="end" class="eje">40</text>
+  <line x1="64" y1="78.7" x2="680" y2="78.7" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="82.7" text-anchor="end" class="eje">50</text>
+  <line x1="64" y1="40.0" x2="680" y2="40.0" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="56" y="44.0" text-anchor="end" class="eje">60</text>
+  <text x="64.0" y="290" text-anchor="middle" class="eje">08:00</text>
+  <text x="187.2" y="290" text-anchor="middle" class="eje">10:00</text>
+  <text x="310.4" y="290" text-anchor="middle" class="eje">12:00</text>
+  <text x="433.6" y="290" text-anchor="middle" class="eje">14:00</text>
+  <text x="556.8" y="290" text-anchor="middle" class="eje">16:00</text>
+  <text x="680.0" y="290" text-anchor="middle" class="eje">18:00</text>
+  <line x1="64" y1="272" x2="680" y2="272" stroke="#a3a3a3" stroke-width="1"/>
+  <line x1="64" y1="136.7" x2="680" y2="136.7" stroke="#c98500" stroke-width="1.5"/>
+  <line x1="64" y1="175.3" x2="680" y2="175.3" stroke="#d03b3b" stroke-width="1.5"/>
+  <circle cx="696" cy="84.3" r="5" fill="#0ca30c"/>
+  <text x="707" y="88.3" class="banda">normal ≥ 35 %</text>
+  <circle cx="696" cy="152.0" r="5" fill="#fab219"/>
+  <text x="707" y="156.0" class="banda">aviso 25–35 %</text>
+  <circle cx="696" cy="219.7" r="5" fill="#d03b3b"/>
+  <text x="707" y="223.7" class="banda">crítico &lt; 25 %</text>
+  <polyline points="64.0,70.9 74.3,71.1 84.5,74.0 94.8,76.0 105.1,80.0 115.3,78.8 125.6,81.1 135.9,81.2 146.1,86.0 156.4,87.6 166.7,89.3 176.9,89.5 187.2,90.7 197.5,94.9 207.7,96.6 218.0,99.7 228.3,98.2 238.5,101.5 248.8,102.9 259.1,107.7 269.3,108.4 279.6,109.5 289.9,110.7 300.1,113.2 310.4,117.8 320.7,118.5 330.9,120.9 341.2,120.1 351.5,124.9 361.7,126.9 372.0,130.8 382.3,130.7 392.5,132.2 402.8,134.9 413.1,138.1 423.3,142.1 433.6,141.8 443.9,144.5 454.1,145.0 464.4,150.7 474.7,152.3 484.9,155.1 495.2,155.2 505.5,157.7 515.7,161.7 526.0,164.5 536.3,167.7 546.5,167.0 556.8,170.8 567.1,172.6 577.3,178.3 587.6,179.0 597.9,181.2 608.1,182.3 618.4,186.1 628.7,190.5 638.9,192.3 649.2,194.8 659.5,194.8 669.7,200.0 680.0,202.4" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="413.1" cy="138.1" r="5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="423.1" y="128.1" text-anchor="start" class="nota">13:40 → aviso</text>
+  <circle cx="577.3" cy="178.3" r="5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+  <text x="567.3" y="200.3" text-anchor="end" class="nota">16:20 → crítico: regar</text>
+</svg>

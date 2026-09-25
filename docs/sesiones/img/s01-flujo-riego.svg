@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 250" role="img" aria-labelledby="t d">
+  <title id="t">Esquema del flujo de control de riego de la sesión 1</title>
+  <desc id="d">La humedad del suelo llega por un mqtt in o por inject de prueba, se convierte de texto a número y un switch la clasifica en tres salidas según los umbrales del contexto de flujo. Cada salida etiqueta el estado (crítico, aviso o normal) y un function decide si regar, guarda el último estado en el contexto y muestra el resultado en un debug. Un inject al desplegar carga los umbrales en el contexto.</desc>
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1e293b; }
+    .n { font-size: 12px; }
+    .etiqueta { font-size: 11px; fill: #64748b; }
+    .puerto { fill: #d9d9d9; stroke: #999999; }
+    .cable { stroke: #999999; stroke-width: 2; fill: none; }
+    .ctx { stroke: #64748b; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+    .nodo { stroke: #999999; }
+  </style>
+
+  <rect class="superficie" x="0.5" y="0.5" width="1039" height="249" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+
+  <!-- Contexto de flujo -->
+  <rect x="400" y="12" width="370" height="40" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-dasharray="5 4"/>
+  <text x="585" y="37" text-anchor="middle" class="n">contexto de flujo · umbrales · estadoSuelo · ultimaHumedadSuelo</text>
+
+  <!-- Carga de umbrales -->
+  <rect x="20" y="17" width="150" height="30" rx="5" fill="#a6bbcf" class="nodo"/>
+  <text x="95" y="36" text-anchor="middle" class="n">cargar umbrales</text>
+  <rect x="165" y="27" width="10" height="10" class="puerto"/>
+  <path d="M175,32 C190,32 190,32 200,32" class="cable"/>
+  <rect x="205" y="17" width="175" height="30" rx="5" fill="#e2d96e" class="nodo"/>
+  <rect x="200" y="27" width="10" height="10" class="puerto"/>
+  <text x="292" y="36" text-anchor="middle" class="n">flow.umbrales = payload</text>
+  <line x1="380" y1="32" x2="398" y2="32" class="ctx" marker-end="url(#flecha)"/>
+
+  <!-- Entradas -->
+  <rect x="20" y="100" width="150" height="30" rx="5" fill="#d8bfd8" class="nodo"/>
+  <text x="95" y="119" text-anchor="middle" class="n">mqtt in · humedad suelo</text>
+  <rect x="165" y="110" width="10" height="10" class="puerto"/>
+
+  <rect x="20" y="160" width="150" height="30" rx="5" fill="#a6bbcf" class="nodo"/>
+  <text x="95" y="179" text-anchor="middle" class="n">prueba 20 · 30 · 50 %</text>
+  <rect x="165" y="170" width="10" height="10" class="puerto"/>
+
+  <path d="M175,115 C195,115 185,145 205,145" class="cable"/>
+  <path d="M175,175 C195,175 185,145 205,145" class="cable"/>
+
+  <!-- Conversión -->
+  <rect x="210" y="130" width="150" height="30" rx="5" fill="#e2d96e" class="nodo"/>
+  <rect x="205" y="140" width="10" height="10" class="puerto"/>
+  <text x="285" y="149" text-anchor="middle" class="n">texto → número</text>
+  <rect x="355" y="140" width="10" height="10" class="puerto"/>
+  <path d="M365,145 C380,145 380,145 395,145" class="cable"/>
+
+  <!-- Clasificación -->
+  <rect x="400" y="125" width="120" height="40" rx="5" fill="#e2d96e" class="nodo"/>
+  <rect x="395" y="140" width="10" height="10" class="puerto"/>
+  <text x="460" y="149" text-anchor="middle" class="n">clasificar</text>
+  <rect x="515" y="128" width="10" height="10" class="puerto"/>
+  <rect x="515" y="140" width="10" height="10" class="puerto"/>
+  <rect x="515" y="152" width="10" height="10" class="puerto"/>
+  <line x1="460" y1="52" x2="460" y2="123" class="ctx" marker-end="url(#flecha)"/>
+  <text x="468" y="92" class="etiqueta">lee umbrales</text>
+
+  <path d="M525,133 C548,133 537,95 560,95" class="cable"/>
+  <path d="M525,145 C548,145 537,145 560,145" class="cable"/>
+  <path d="M525,157 C548,157 537,195 560,195" class="cable"/>
+  <text x="540" y="108" class="etiqueta">1</text>
+  <text x="540" y="140" class="etiqueta">2</text>
+  <text x="532" y="180" class="etiqueta">3</text>
+
+  <!-- Estados -->
+  <rect x="565" y="80" width="150" height="30" rx="5" fill="#e2d96e" class="nodo"/>
+  <rect x="560" y="90" width="10" height="10" class="puerto"/>
+  <text x="640" y="99" text-anchor="middle" class="n">estado = crítico</text>
+  <rect x="710" y="90" width="10" height="10" class="puerto"/>
+
+  <rect x="565" y="130" width="150" height="30" rx="5" fill="#e2d96e" class="nodo"/>
+  <rect x="560" y="140" width="10" height="10" class="puerto"/>
+  <text x="640" y="149" text-anchor="middle" class="n">estado = aviso</text>
+  <rect x="710" y="140" width="10" height="10" class="puerto"/>
+
+  <rect x="565" y="180" width="150" height="30" rx="5" fill="#e2d96e" class="nodo"/>
+  <rect x="560" y="190" width="10" height="10" class="puerto"/>
+  <text x="640" y="199" text-anchor="middle" class="n">estado = normal</text>
+  <rect x="710" y="190" width="10" height="10" class="puerto"/>
+
+  <path d="M720,95 C740,95 730,145 750,145" class="cable"/>
+  <path d="M720,145 C735,145 735,145 750,145" class="cable"/>
+  <path d="M720,195 C740,195 730,145 750,145" class="cable"/>
+
+  <!-- Decisión -->
+  <rect x="755" y="130" width="140" height="30" rx="5" fill="#fdd0a2" class="nodo"/>
+  <rect x="750" y="140" width="10" height="10" class="puerto"/>
+  <text x="825" y="149" text-anchor="middle" class="n">decidir riego</text>
+  <rect x="890" y="140" width="10" height="10" class="puerto"/>
+  <line x1="752" y1="52" x2="805" y2="128" class="ctx" marker-start="url(#flecha)" marker-end="url(#flecha)"/>
+  <text x="790" y="82" class="etiqueta">lee / escribe</text>
+
+  <path d="M900,145 C912,145 912,145 925,145" class="cable"/>
+  <rect x="930" y="130" width="95" height="30" rx="5" fill="#87a980" class="nodo"/>
+  <rect x="925" y="140" width="10" height="10" class="puerto"/>
+  <text x="977" y="149" text-anchor="middle" class="n">decisión</text>
+
+  <text x="825" y="185" text-anchor="middle" class="etiqueta">{ humedad, estado, accion, cambio }</text>
+</svg>

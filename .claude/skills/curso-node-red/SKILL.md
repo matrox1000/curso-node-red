@@ -126,7 +126,8 @@ Reglas:
 
 - **Formato.** Diagramas y gráficas en **SVG** escrito a mano o generado por script, que es ligero, nítido y se puede versionar. Capturas en **PNG**. No uses arte ASCII para diagramas que sean clave para entender la sesión: pásalo a SVG. El ASCII solo vale como apoyo rápido dentro de un bloque de código.
 - **Ubicación y enlaces.** Guarda las imágenes junto a la página, en `docs/<sección>/img/sNN-<descripcion>.svg|png` (p. ej. `docs/sesiones/img/s03-bridges-rpi.svg`), y enlázalas con una ruta relativa: `![texto alternativo](./img/s03-bridges-rpi.svg)`. Vite las procesa y respeta la `base` de GitHub Pages.
-- **Tema claro y oscuro.** El sitio tiene los dos temas. Cada SVG debe leerse bien en ambos: cajas con relleno propio y texto oscuro sobre relleno claro (el contraste lo da la caja, no el fondo de la página), y trazos y flechas en tonos medios. Evita el negro o el blanco puro sobre fondo transparente.
+- **Tema claro y oscuro.** El sitio tiene los dos temas, y una imagen `<img>` no sabe cuál está activo. Por eso **cada SVG lleva su propia superficie clara**: como primer elemento tras `<style>`, `<rect class="superficie" x="0.5" y="0.5" width="W-1" height="H-1" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>`. Todo el texto, incluidas las etiquetas de las flechas, queda sobre esa superficie, nunca sobre el fondo de la página. Revisa cada imagen renderizada sobre fondo claro **y** oscuro antes de darla por buena (p. ej. con Edge headless: `msedge --headless=new --screenshot=...`).
+- **Esquemas de nodos de Node-RED.** Para dibujar un flujo, usa los colores reales de los nodos del editor (`inject` `#a6bbcf`, `debug` `#87a980`, `function` `#fdd0a2`, `change`/`switch` `#e2d96e`, `mqtt` `#d8bfd8`, `http` `#e7e7ae`, `catch`/`status` `#e49191`), con puertos grises y cables curvos `#999`, para que el alumno lo reconozca en el editor. Referencia: `docs/sesiones/img/s01-flujo-riego.svg`.
 - **Accesibilidad.** Texto alternativo descriptivo siempre. Si la imagen transmite información que no está en el texto, añade debajo una frase que la resuma.
 - **Coherencia visual.** Mismos colores para los mismos elementos en todo el curso. Nombres, topics y valores deben coincidir con los reales (`references/invernadero-mqtt.md`). Paleta (relleno / borde); referencia: `docs/sesiones/img/s02-arquitectura.svg`:
 
@@ -138,6 +139,7 @@ Reglas:
   | Nodo dentro de Node-RED | `#ffffff` | `#cbd5e1` |
   | Contexto (flow/global), trazo discontinuo | `#fefce8` | `#ca8a04` |
   | Servicios externos (APIs, Telegram, LLM) | `#dbeafe` | `#2563eb` |
+  | Almacenamiento (InfluxDB, SQL) | `#ccfbf1` | `#0d9488` |
   | Actuadores (Shelly) | `#fef3c7` | `#d97706` |
   | Clientes / usuario | `#f1f5f9` | `#64748b` |
 

@@ -16,6 +16,8 @@
     .ctx { stroke: #64748b; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
   </style>
 
+  <rect class="superficie" x="0.5" y="0.5" width="879" height="379" rx="12" fill="#fcfcfb" stroke="#e5e7eb"/>
+
   <!-- Servicio externo -->
   <rect x="710" y="40" width="150" height="64" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
   <text x="785" y="67" text-anchor="middle" class="titulo">Open-Meteo</text>

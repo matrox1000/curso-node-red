@@ -63,20 +63,13 @@ Node-RED se ejecuta en tu PC con **docker-compose**. El entorno se entrega en la
 En el laboratorio, Node-RED se conecta al broker de la **Raspberry Pi** y recibe los datos reales. Fuera de él, se conecta al `mosquitto` local, donde publica el `simulador`. Los flujos son los mismos: solo cambia el host del broker en el nodo de configuración MQTT.
 :::
 
+![En el laboratorio, Node-RED se conecta a la Raspberry Pi, que reúne los brokers de los ESP32; en casa, a un Mosquitto local donde publica el simulador. Solo cambia el fichero .env](./img/temario-entorno.svg)
+
 ## Arquitectura del sistema
 
-```text
-                                   ┌─────────────────── Tu PC (Docker) ─────────────────────┐
- ┌──────────┐   MQTT   ┌───────┐   │                                                        │
- │  ESP32   │ ───────▶ │  RPi  │ ─▶│  Node-RED: lógica de control (S1)                      │
- │ sensores │          │broker │   │     │  ◀── APIs externas: meteorología (S2)           │
- └──────────┘          └───────┘   │     │  ◀── integración MQTT de todos los sensores (S3)│
-  (o simulador + mosquitto local)  │     ├──▶ panel de monitorización (S4)                  │
-                                   │     ├──▶ InfluxDB: histórico (S5)                      │
-                                   │     ├──▶ alertas por Telegram (S6)                     │
-                                   │     └──▶ asistente de IA (S7)                          │
-                                   └────────────────────────────────────────────────────────┘
-```
+![Arquitectura del sistema: los ESP32 y los Shelly del invernadero se conectan a la Raspberry Pi, y el Node-RED de tu PC se conecta a ella y añade en cada sesión una pieza: lógica de control, APIs externas, integración MQTT, panel de operador, histórico en InfluxDB, alarmas por Telegram y asistente de IA](./img/temario-arquitectura.svg)
+
+Cada bloque de Node-RED es la pieza que construyes en esa sesión. A la derecha, los servicios con los que se comunica.
 
 ## Planificación de sesiones
 
