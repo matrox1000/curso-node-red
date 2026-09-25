@@ -102,7 +102,7 @@ package.json           # dependencia `vitepress`
 ```
 
 - El **sidebar** de `.vitepress/config.ts` debe reflejar siempre las 7 sesiones en orden, más una sección de evaluación; cualquier página nueva se añade también aquí, no solo como fichero suelto.
-- Los flujos Node-RED exportados van en `public/flows/` (VitePress los sirve como asset estático) y se enlazan desde la página de la sesión con un enlace de descarga, no se pegan como JSON gigante en el cuerpo del Markdown.
+- Los flujos Node-RED exportados van en `public/flows/` (VitePress los sirve como asset estático) y se enlazan desde la página de la sesión con un enlace de descarga, no se pegan como JSON gigante en el cuerpo del Markdown. El sitio se publica en GitHub Pages con `base: '/curso-node-red/'`, y VitePress no añade la base a los enlaces a ficheros de `public/`: usa rutas **relativas**, p. ej. `[s1-control-riego.json](../flows/s1-control-riego.json){download}`.
 - Usa contenedores VitePress donde aporten (`::: tip` para atajos, `::: warning` para errores comunes de Node-RED/MQTT, `::: code-group` para mostrar el mismo paso contra el invernadero real vs. el simulador). Ver `references/core-markdown.md` y `references/features-code-blocks.md` de la skill vitepress.
 - El sitio no debe tener enlaces rotos (`vitepress build` falla con ellos): no enlazar páginas que aún no existen.
 

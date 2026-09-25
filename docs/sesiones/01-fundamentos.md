@@ -240,7 +240,7 @@ return msg;
 
 Conecta la salida a un `debug` y prueba con los `inject` y con los datos reales.
 
-Si te atascas, puedes descargar el flujo de referencia de la práctica guiada: <a href="/flows/s1-control-riego.json" download>s1-control-riego.json</a>. Impórtalo con **Menú → Import**, abre el nodo `Broker invernadero` y escribe el usuario y la contraseña: las credenciales nunca se exportan.
+Si te atascas, puedes descargar el flujo de referencia de la práctica guiada: [s1-control-riego.json](../flows/s1-control-riego.json){download}. Impórtalo con **Menú → Import**, abre el nodo `Broker invernadero` y escribe el usuario y la contraseña: las credenciales nunca se exportan.
 
 ### Paso 9 · Ver reaccionar al invernadero (solo en casa, 10 min)
 

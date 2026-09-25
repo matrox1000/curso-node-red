@@ -4,6 +4,8 @@ export default defineConfig({
   lang: 'es-ES',
   title: 'Node-RED · Sistemas Industriales',
   description: 'Módulo de Node-RED de la asignatura Sistemas Industriales: 7 sesiones sobre el invernadero del laboratorio',
+  // Publicado en GitHub Pages: https://matrox1000.github.io/curso-node-red/
+  base: '/curso-node-red/',
   cleanUrls: true,
   lastUpdated: true,
   // Enlaces a los servicios del entorno Docker del alumno (Node-RED, InfluxDB...)
